@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>XDom</title>
+    <script src="../src/index.js"></script>
+</head>
+<body>
+<script>
+var html =
+`<div>
+    <!-- html -->
+    <h1>Hello</h1>
+    <div>
+        <div>zhangsan</div>
+        <div>lisi</div>
+        <div>20</div>
+    </div>
+</div>`;
+
+var obj = new XDom();
+obj.parse(html);
+
+var dom = obj.getDom();
+dom.querySelector('h1').onclick = function() {
+    alert(this.innerHTML);
+}
+
+document.body.appendChild(dom);
+</script>
+</body>
+</html>
