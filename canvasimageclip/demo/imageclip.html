@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+canvas {
+    background-color: #000;
+}
+</style>
+</head>
+<body>
+<div style="position:absolute; top:200px; left:0px; width:600px; height:400px;">
+    <canvas id="myCanvas" width="600" height="400" style='position:absolute; top:0; left:0;'></canvas>
+</div>
+
+<div style="position:absolute; top:200px; left:800px; width:600px; height:400px;">
+    <canvas id="myCanvas2" width="600" height="400" style='position:absolute; top:0; left:0;'></canvas>
+</div>
+<div id="rs"></div>
+
+<script src="../ImageClip.js"></script>
+<script>
+var imgClip = new ImageClip('myCanvas', {
+    maskStyle: 'rgba(0, 0, 0, .6)',
+    clipWidth: 200,
+    clipHeight: 200
+});
+imgClip.clip('./foo.jpg');
+
+var rs = document.getElementById('rs');
+imgClip.onChange = function(d) {
+    rs.innerHTML = 'x1: ' + d.x1
+        + '<br />y1: ' + d.y1
+        + '<br />x2: ' + d.x2
+        + '<br />y2: ' + d.y2
+}
+
+var imgClip2 = new ImageClip('myCanvas2', {
+    maskStyle: 'rgba(255, 255, 255, .4)',
+    clipWidth: 200,
+    clipHeight: 200
+});
+imgClip2.clip('./bar.jpg');
+</script> 
+</body>
+</html>
