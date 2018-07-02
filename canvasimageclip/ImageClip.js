@@ -171,6 +171,11 @@ ImageClip.prototype = {
             });
         }
     },
+    /**
+     * 裁剪图片
+     *
+     * @param {String} imageUrl
+     */
     clip: function(imageUrl) {
         var _self = this;
         
@@ -225,5 +230,19 @@ ImageClip.prototype = {
         this.canvas.onmouseup = function(e) {
             _self.beginMove = false;
         };
+    },
+    /**
+     * 销毁
+     */
+    destroy: function() {
+        this.canvas.onmousemove = null;
+        this.canvas.onmousedown = null;
+        this.canvas.onmouseup = null;
+        
+        this.context = null;
+        this.canvas = null;
+        this.image = null;
+        
+        this.doc = null;
     }
 };
