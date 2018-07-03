@@ -47,7 +47,7 @@ ImageClip.prototype = {
     },
     drawImage: function() {
         // 宽图
-        if(this.imageOriginWidth >= this.imageOriginHeight) {
+        if(this.isWideImage()) {
             this.context.drawImage(this.image,
                 0, (this.canvasHeight - this.imageScaleHeight) / 2,
                 this.canvasWidth, this.imageScaleHeight);
@@ -91,6 +91,9 @@ ImageClip.prototype = {
         
         this.context.restore();
     },
+    isWideImage: function() {
+        return this.imageOriginWidth >= this.imageOriginHeight;
+    },
     checkPath: function(e) {
         if(e.offsetX > this.clipX && e.offsetX < this.clipX + this.clipScaleWidth
             && e.offsetY > this.clipY && e.offsetY < this.clipY + this.clipScaleHeight) {
@@ -121,8 +124,7 @@ ImageClip.prototype = {
         
         // 限制裁剪移动区域
         var tmp = 0;
-        var wideImage = this.imageOriginWidth >= this.imageOriginHeight;
-        if(wideImage) {
+        if(this.isWideImage()) {
             tmp = (this.canvasHeight - this.imageScaleHeight) / 2;
             
             if(this.clipX <= 0) {
@@ -158,18 +160,28 @@ ImageClip.prototype = {
         this.render();
         
         if(null !== this.onChange) {
-            this.onChange(wideImage ? {
+            this.onChange(this.getClipPosition());
+        }
+    },
+    getClipPosition: function() {
+        var wideImage = this.isWideImage();
+        var tmp = wideImage
+            ? (this.canvasHeight - this.imageScaleHeight) / 2
+            : (this.canvasWidth - this.imageScaleWidth) / 2;
+        
+        return wideImage
+            ? {
                 x1: this.clipX / this.aspectRatio,
                 y1: (this.clipY - tmp) / this.aspectRatio,
                 x2: (this.clipX + this.clipScaleWidth) / this.aspectRatio,
                 y2: (this.clipY + this.clipScaleHeight - tmp) / this.aspectRatio
+                
             } : {
                 x1: (this.clipX - tmp) / this.aspectRatio,
                 y1: this.clipY / this.aspectRatio,
                 x2: (this.clipX + this.clipScaleWidth - tmp) / this.aspectRatio,
                 y2: (this.clipY + this.clipScaleHeight) / this.aspectRatio
-            });
-        }
+            };
     },
     /**
      * 裁剪图片
@@ -185,7 +197,7 @@ ImageClip.prototype = {
             _self.imageOriginHeight = this.height;
                         
             // 宽图按宽度占满
-            if(_self.imageOriginWidth >= _self.imageOriginHeight) {
+            if(_self.isWideImage()) {
                 _self.imageScaleWidth = _self.canvasWidth;
                 _self.imageScaleHeight = _self.imageScaleWidth * _self.imageOriginHeight / _self.imageOriginWidth;
                 
