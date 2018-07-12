@@ -7,20 +7,21 @@
  * `
  * <div class="demo">
  *     <ul>
- *     <% for(var i=0; i<3; i++){ %>
- *     <li><%= i %></li>
+ *     <% for(var i=0; i<data.length; i++){ %>
+ *     <li><%= data[i] %></li>
  *     <% } %>
  *     </ul>
  * </div>
  * `;
  *
  * var x = new XTemplate();
- * var ret = x.parse(html, {});
- * console.log(ret)
+ * var cache = x.compile(html);
+ * var ret = x.run([1, 2, 3, 4, 5]);
+ * console.log(ret);
  *
  */
 function XTemplate() {
-    this.ret = ['var tpl = "";'];
+    this.compiled = ['var tpl = "";'];
     this.jsRegex = /<%([\s\S]*?)%>/g;
 }
 XTemplate.prototype = {
@@ -28,23 +29,23 @@ XTemplate.prototype = {
     onText: function(text) {
         var t = 'tpl += "' + text + '";';
         
-        this.ret.push(t);
+        this.compiled.push(t);
     },
     onJs: function(text) {        
-        this.ret.push(text);
+        this.compiled.push(text);
     },
     onJsPlaceholder: function(text) {
         var t = 'tpl += ' + text + ';';
         
-        this.ret.push(t);
+        this.compiled.push(t);
     },
     onEnd: function() {
-        this.ret.push('return tpl;');
+        this.compiled.push('return tpl;');
     },
     processText: function(text) {
         return text.replace(/\r\n|\n/g, '\\n').replace(/"/g, '\\"');
     },
-    parse: function(html, data) {
+    compile: function(html) {
         var parts = null;
         // the index at which to start the next match
         var lastIndex = 0;
@@ -72,6 +73,9 @@ XTemplate.prototype = {
         this.onText( this.processText(html.substring(lastIndex)) );
         this.onEnd();
         
-        return new Function('data', this.ret.join('\n'))(data);
+        return this.compiled;
     },
+    run: function(data) {
+        return new Function('data', this.compiled.join('\n'))(data);
+    }
 };
