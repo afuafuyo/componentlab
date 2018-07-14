@@ -3,8 +3,7 @@
  */
 function XHtml() {
     this.doc = document;
-    this.topRole = 'xhtml-wrapper';
-    this.unsafeRole = 'unsafe';
+    this.dom = null;
 
     // <(xxx)( data-name="lisi") xxx />
     // </(xxx)>
@@ -19,32 +18,17 @@ function XHtml() {
     // (title)="()"
     this.attributesRegex = /([\w\-:]+)\s*=\s*(?:(?:"([^"]*)")|(?:'([^']*)')|([^>\s]+))/g;
     
-    /**
-     * 合法的标签
-     *
-     * {p: true, div: true ...}
-     */
-    this.allowedTags = null;
-    
-    /**
-     * 合法的属性
-     *
-     * {id: true, style: true ...}
-     */
-    this.allowedAttributes = null;
-    
     this.resetStack();
 }
 XHtml.prototype = {
     constructor: XHtml,
     
     resetStack: function() {
-        // 存放父容器
         this.lookingBackTagstack = new XStack();
         
         // 初始放入一个顶级容器
         var node = this.doc.createElement('div');
-        node.setAttribute('data-role', this.topRole);
+        node.setAttribute('data-role', 'xhtml-wrapper');
         this.lookingBackTagstack.push(node);
         
         node = null;
@@ -54,77 +38,35 @@ XHtml.prototype = {
         var node = this.doc.createTextNode(text);
 
         this.lookingBackTagstack.getTail().appendChild(node);
-        
-        node = null;
     },
 
     onClose: function(tagName) {
-        var node = this.lookingBackTagstack.pop();
-        
-        // 删除标签
-        if(this.unsafeRole === node.getAttribute('data-role')) {
-            node.parentNode.removeChild(node);
-        }
-        
-        node = null;
+        this.dom = this.lookingBackTagstack.pop();
     },
 
     onOpen: function(tagName, attributes) {
-        var nodeName = tagName.toLowerCase();
-        var attrs = attributes;
-        
-        // 设置了属性过滤
-        if(null !== this.allowedAttributes) {
-            for(var k in attrs) {
-                if(undefined === this.allowedAttributes[k]) {
-                    delete attrs[k];
-                }
-            }
+        tagName = tagName.toLowerCase();
+
+        var node = this.doc.createElement(tagName);
+        for(var k in attributes) {
+            node.setAttribute(k, attributes[k]);
         }
 
-        var node = this.doc.createElement(nodeName);
-        
-        for(var k in attrs) {
-            node.setAttribute(k, attrs[k]);
-        }
-        
-        // 设置了标签过滤
-        if(null !== this.allowedTags
-            && undefined === this.allowedTags[nodeName]) {
-            node.setAttribute('data-role', this.unsafeRole);
-        }
-        
-        /*
-        // 子元素
-        this.lookingBackTagstack.getTail().appendChild(node);
-        
-        // 直接删除不安全自闭合标签
-        if(1 === XHtml.selfClosingTags[nodeName]
-            && this.unsafeRole === node.getAttribute('data-role')) {
-            this.lookingBackTagstack.getTail().removeChild(node);
-        }
-        */
-        if(1 !== XHtml.selfClosingTags[nodeName]
-            || (1 === XHtml.selfClosingTags[nodeName]
-                && this.unsafeRole !== node.getAttribute('data-role'))) {
-            
+        //if(null !== this.lookingBackTagstack.getTail()
+        //        && node !== this.lookingBackTagstack.getTail()) {
             this.lookingBackTagstack.getTail().appendChild(node);
-        }
+        //}
 
         // 开始标签入栈 可以作为父容器使用
-        if(1 !== XHtml.selfClosingTags[nodeName]) {
+        if(1 !== XHtml.selfClosingTags[tagName]) {
             this.lookingBackTagstack.push(node);
         }
-        
-        node = null;
     },
 
     onComment: function(content) {
         var node = this.doc.createComment(content);
 
         this.lookingBackTagstack.getTail().appendChild(node);
-        
-        node = null;
     },
 
     /**
@@ -185,27 +127,13 @@ XHtml.prototype = {
                 this.onComment(tagName);
             }
         }
-        
-        var top = this.lookingBackTagstack.getTail();
-        if(null !== top && this.topRole !== top.getAttribute('data-role')) {
-            throw new Error('unpaired tags');
-        }
     },
 
     /**
      * 获取 dom
-     *
-     * @return Object
      */
     getDom: function() {
-        return this.lookingBackTagstack.getHead();
-    },
-    
-    /**
-     * 获取 html
-     */
-    getHtml: function() {        
-        return this.lookingBackTagstack.getHead().innerHTML;
+        return this.dom;
     }
 };
 
@@ -297,10 +225,6 @@ XStack.prototype = {
         return ret;
     },
 
-    getHead: function() {
-        return null === this.headNode ? null : this.headNode.data;
-    },
-    
     getTail: function() {
         return null === this.tailNode ? null : this.tailNode.data;
     },

@@ -8,25 +8,34 @@
 <body>
 <script>
 var html =
-`<div>
-    <!-- html -->
+`
+<div>
     <h1>Hello</h1>
-    <div>
-        <div>zhangsan</div>
-        <div>lisi</div>
-        <div>20</div>
+    <div id="user" onclick="alert(1)">
+        <p>zhangsan</p>
+        <p>male</p>
+        <p>20</p>
     </div>
-</div>`;
+</div>
+`;
 
-var obj = new XDom();
+// 转 dom 对象 translate to dom object
+var obj = new XHtml();
 obj.parse(html);
 
 var dom = obj.getDom();
 dom.querySelector('h1').onclick = function() {
     alert(this.innerHTML);
 }
-
 document.body.appendChild(dom);
+
+
+// 过滤标签和属性 filter tags & attributes
+obj.resetStack();
+obj.allowedTags = {div: true, p: true};
+obj.allowedAttributes = {id: true};
+obj.parse(html);
+console.log(obj.getHtml());
 </script>
 </body>
 </html>
