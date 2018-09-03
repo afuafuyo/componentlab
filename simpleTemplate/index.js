@@ -15,7 +15,8 @@
  * `;
  *
  * var x = new XTemplate();
- * var cache = x.compile(html);
+ * x.compile(html);
+ *
  * var ret = x.run([1, 2, 3, 4, 5]);
  * console.log(ret);
  *
