@@ -15,12 +15,13 @@ var html =
 `;
 
 var x = new XTemplate();
-var cache = x.compile(html);
+x.compile(html);
+
+// 使用
 var ret = x.run([1, 2, 3, 4, 5]);
 console.log(ret);
 
-// 缓存
-x.compiled = cache;
+// 编译完一次模板后 第二次使用不用再重新编译
 ret = x.run([4, 5, 6]);
 console.log(ret);
 ```
