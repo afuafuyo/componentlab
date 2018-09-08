@@ -394,7 +394,7 @@
                     
                     // remove the script to reduce memory leak
                     if(!isCss) {
-                        //_self.head.removeChild(this);
+                        _self.head.removeChild(this);
                     }
                     
                     // callback
