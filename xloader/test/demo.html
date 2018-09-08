@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>XLoader</title>
+<script src="../XLoader.js"></script>
+<script>
+loader.config({
+    baseUrl: '.',
+    alias: {
+        'remote': 'http://funsill.com/dist'
+    },
+    debug: true
+});
+</script>
+</head>
+<body>
+<div id="demo"></div>
+
+<script>
+using(['foo'], function(Foo){
+    Foo();
+})
+</script>
+</body>
+</html>
