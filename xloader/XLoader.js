@@ -300,7 +300,7 @@
             for(var i=0; i<len; i++) {
                 if(!Module.exists(this.depends[i]) ||
                     !Module.get(this.depends[i]).compiled) {
-                
+                    
                     ret = false;
                     
                     break;
@@ -422,7 +422,7 @@
                     node.rel = 'stylesheet';
                     node.href = this.depends[id];
                     
-                } else {                    
+                } else {
                     node.async = true;
                     node.src = this.depends[id];
                 }
