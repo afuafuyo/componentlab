@@ -1,6 +1,8 @@
 /**
  * canvas 图片裁剪
  *
+ * @author afu
+ *
  * @param {String} id
  * @param {Object} options
  */

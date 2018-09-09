@@ -1,6 +1,8 @@
 /**
  * 简单 js 模板引擎
  *
+ * @author afu
+ *
  * eg.
  *
  * var html =
