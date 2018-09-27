@@ -19,6 +19,9 @@ var XCommentMobile = function(options) {
         widgets: [{
             name: 'emoji',
             text: '颜文字'
+        }, {
+            name: 'image',
+            text: '图片'
         }],
         placeholder: '请自觉遵守互联网相关的政策法规，严禁发布色情、暴力、反动的言论。'
     };
@@ -107,6 +110,8 @@ XCommentMobile.prototype = {
             
             tab.setAttribute('href', 'javascript:;');
             tab.setAttribute('data-index', i);
+            tab.setAttribute('data-role', 'widgetstab');
+            tab.setAttribute('data-widgetname', this.configs.widgets[i].name);
             tab.innerHTML = this.configs.widgets[i].text;
             popFooterWrapper.appendChild(tab);
         }
@@ -119,12 +124,28 @@ XCommentMobile.prototype = {
             _self.configs.onSubmit(_self.getValue());
         }
         
+        // 点击插件区
         this.widgetsPop.onclick = function(e) {
+            var target = e.target;
+            var popContentWrapper = _self.widgetsPop.querySelector('.mxcomment-widgets-pop-content');
             var footer = _self.widgetsPop.querySelector('.mxcomment-widgets-pop-footer');
             var tabs = footer.querySelectorAll('a');
             var nowTabIndex = 0;
             var instanceWidgets = _self.widgetControllerInstances;
             
+            // 如果点击 tab
+            if('widgetstab' === target.getAttribute('data-role')) {
+                popContentWrapper.innerHTML
+                    = _self.widgetControllerInstances[target.getAttribute('data-widgetname')].getWidgetContent();
+                
+                for(var i=0, len=tabs.length; i<len; i++) {
+                    tabs[i].className = '';
+                }
+                
+                target.className = 'active';
+            }
+            
+            // 计算当前选中项
             for(var i=0, len=tabs.length; i<len; i++) {
                 if(tabs[i].className.indexOf('active') >= 0) {
                     nowTabIndex = i;
@@ -222,24 +243,25 @@ function XCommentEmoji(xComment) {
     // insert emoji
     this.onClick = function(e) {
         var target = e.target;
-        var role = target.getAttribute('data-role');
         
         var start = this.xComment.textArea.selectionStart;
         var end = this.xComment.textArea.selectionEnd;
         var value = this.xComment.textArea.value;
         
-        // emoji
-        if(null !== role && 'em' === role) {
-            if('' === value) {
-                this.xComment.textArea.value = target.getAttribute('data-em');
-                
-                return;
-            }
-            
-            this.xComment.textArea.value = value.substring(0, start)
-                + target.getAttribute('data-em')
-                + value.substring(end);
+        if('em' !== target.getAttribute('data-role')) {
+            return;
         }
+        
+        // emoji
+        if('' === value) {
+            this.xComment.textArea.value = target.getAttribute('data-em');
+            
+            return;
+        }
+        
+        this.xComment.textArea.value = value.substring(0, start)
+            + target.getAttribute('data-em')
+            + value.substring(end);
     };
     
     this.destroy = function() {
@@ -247,3 +269,57 @@ function XCommentEmoji(xComment) {
     };
 }
 XCommentMobile.registerWidgetController('emoji', XCommentEmoji);
+
+/**
+ * image widget
+ */
+function XCommentImage(xComment) {
+    this.xComment = xComment;
+    
+    this.getWidgetContent = function() {
+        var ret =
+            '<div class="mxcomment-widgets-image">' +
+                '<div><input class="mxcomment-widgets-image-input" type="text"></div>' +
+                '<div class="mxcomment-widgets-image-btn-wrapper">' +
+                    '<button type="button" data-role="imageinsert" class="mxcomment-widgets-image-btn">插入图片</button>' +
+                '</div>' +
+            '</div>';
+
+        return ret;
+    };
+    
+    // insert emoji
+    this.onClick = function(e) {
+        var t = e.target;
+        
+        var start = this.xComment.textArea.selectionStart;
+        var end = this.xComment.textArea.selectionEnd;
+        var value = this.xComment.textArea.value;
+        
+        if('imageinsert' !== t.getAttribute('data-role')) {
+            return;
+        }
+        
+        var input = this.xComment.widgetsPop.querySelector('.mxcomment-widgets-image-input');
+        
+        if('' === input.value) {
+            return;
+        }
+        
+        // no data
+        if('' === value) {
+            this.xComment.textArea.value = '[img src="'+ input.value +'"]';
+            
+            return;
+        }
+        
+        this.xComment.textArea.value = value.substring(0, start)
+            + '[img src="'+ input.value +'"]'
+            + value.substring(end);
+    };
+    
+    this.destroy = function() {
+        this.xComment = null;
+    };
+}
+XCommentMobile.registerWidgetController('image', XCommentImage);
