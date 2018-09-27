@@ -288,7 +288,7 @@ function XCommentImage(xComment) {
         return ret;
     };
     
-    // insert emoji
+    // insert
     this.onClick = function(e) {
         var t = e.target;
         
