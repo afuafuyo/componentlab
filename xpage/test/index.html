@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="../XPage.js"></script>
+<style rel="stylesheet" type="text/css">
+.x-page {
+    font-size: 14px;
+}
+.x-page-item {
+    display: inline-block;
+    height: 36px;
+    line-height: 36px;
+    padding: 0 14px;
+    margin-left: 5px;
+    color: #222;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+.x-page-active {
+    color: #fff;
+    cursor: default;
+    border-color: #00a1d6;
+    background-color: #00a1d6;
+}
+.x-page-total {
+    padding-left: 0;
+    margin-left: 0;
+    border: 0;
+}
+.x-page a:hover {
+    color: #fff;
+    background-color: #00a1d6;
+    text-decoration: none;
+}
+.x-page-jump {
+    font-size: 12px;
+    float: right;
+    color: #666;
+    line-height: 36px;
+}
+.x-page-jump-input {
+    margin: 0 5px;
+    padding: 0 5px;
+    height: 24px;
+    line-height: 24px;
+    font-size: 12px;
+    width: 40px;
+    text-align: center;
+    outline: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+</style>
+</head>
+<body>
+<div id="container" style="padding: 10px 0"></div>
+
+<script>
+var page = new XPage(1000, 10);
+page.render(document.getElementById('container'));
+
+page.onChange = function(currentPage, e) {
+    console.log(currentPage);
+    page.render(document.getElementById('container'));
+};
+</script>
+</body>
+</html>
