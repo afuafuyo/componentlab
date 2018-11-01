@@ -177,7 +177,7 @@
  */
 .xcomment-face {
     position: absolute;
-    top: 12px;
+    top: 16px;
     left: 16px;
 }
 .xcomment-avatar {
@@ -208,6 +208,7 @@
 .xcomment-widget {
     position: relative;
     color: #99a2aa;
+    margin-top: 5px;
     line-height: 26px;
     font-size: 12px;
 }
@@ -301,7 +302,7 @@
 
 /* reply */
 .xcomment-reply {
-    padding: 8px 0;
+    padding: 10px 0;
 }
 .xcomment-reply-face {
     left: 0;
