@@ -448,7 +448,6 @@
     // 兼容
     if(undefined === global.define) {
         global.define = loader.define;
-        global.define.amd = true;
         global.using = loader.using;
     }
     
