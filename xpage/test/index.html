@@ -54,6 +54,9 @@
     border: 1px solid #ddd;
     border-radius: 4px;
 }
+.x-page-jump-input:focus {
+    border-color: #00a1d6;
+}
 </style>
 </head>
 <body>
@@ -61,6 +64,16 @@
 
 <script>
 var page = new XPage(1000, 10);
+page.setConfigs({
+    linkItemNumber: 5,
+        
+    showHome: false,
+    showPrevious: true,
+    showItem: true,
+    showNext: true,
+    showLast: false,
+    showJump: true
+});
 page.render(document.getElementById('container'));
 
 page.onChange = function(currentPage, e) {

@@ -24,7 +24,7 @@ function XPage(totalRecords, pageSize) {
     this.mountNode = null;
     this.currentPage = 1;
     this.onChange = null;
-    this.config = {
+    this.configs = {
         linkItemNumber: 7,
         
         showHome: true,
@@ -38,28 +38,34 @@ function XPage(totalRecords, pageSize) {
 XPage.prototype = {
     constructor: XPage,
     setConfig: function(key, value) {
-        this.config[key] = value;
+        this.configs[key] = value;
+    },
+    setConfigs: function(options) {
+        for(var k in options) {
+            this.configs[k] = options[k];
+        }
     },
     getSegment: function(flag) {
         var str = '';
+        
         switch(flag) {
             case 1:
-                str = this.config.showJump
+                str = this.configs.showJump
                     ? '<div class="x-page-jump">总共' + this.totalPages + '页，跳转到<input type="text" class="x-page-jump-input" />页</div>'
                     : '';
                 break;
             case 2:
-                str = this.config.showHome
+                str = this.configs.showHome
                     ? '<a data-page="1" href="javascript:;" class="x-page-item">首页</a>'
                     : '';
                 break;
             case 3:
-                str = this.config.showPrevious
+                str = this.configs.showPrevious
                     ? '<a data-page="'+ (this.currentPage-1) +'" href="javascript:;" class="x-page-item">上一页</a>'
                     : '';
                 break;
             case 4:
-                var half = Math.floor(this.config.linkItemNumber / 2);
+                var half = Math.floor(this.configs.linkItemNumber / 2);
                 var counter = 0, tmp = '';
                 
                 for(var i=this.currentPage-half; i<this.currentPage; i++) {
@@ -69,16 +75,16 @@ XPage.prototype = {
                 for(var i=this.currentPage+1; i<=this.currentPage+half+half-counter; i++) {
                     i <= this.totalPages && (tmp += '<a data-page="'+ i +'" href="javascript:;" class="x-page-item">'+ i +'</a>');
                 }
-            
-                str = this.config.showItem ? tmp : '';
+                
+                str = this.configs.showItem ? tmp : '';
                 break;
             case 5:
-                str = this.config.showNext
+                str = this.configs.showNext
                     ? '<a data-page="'+ (this.currentPage+1) +'" href="javascript:;" class="x-page-item">下一页</a>'
                     : '';
                 break;
             case 6:
-                str = this.config.showLast
+                str = this.configs.showLast
                     ? '<a data-page="'+ this.totalPages +'" href="javascript:;" class="x-page-item">尾页</a>'
                     : '';
                 break;
@@ -92,9 +98,9 @@ XPage.prototype = {
         var _self = this;
         
         this.mountNode.onclick = null;
+        this.mountNode.onkeyup = null;
         this.mountNode.onclick = function(e) {
-            e = e || window.event;
-            var src = e.target || e.srcElement;
+            var src = e.target;
             
             if(1 === src.nodeType && 'A' === src.tagName.toUpperCase()) {
                 _self.currentPage = parseInt(src.getAttribute('data-page'));
@@ -104,6 +110,27 @@ XPage.prototype = {
                 if(null !== _self.onChange) {
                     _self.onChange(_self.currentPage, e);
                 }
+            }
+        };
+        
+        this.mountNode.onkeyup = function(e) {
+            var code = e.keyCode;
+            
+            if(13 !== code) {
+                return;
+            }
+            
+            _self.currentPage = parseInt(e.target.value);
+            
+            if(_self.currentPage > _self.totalPages) {
+                _self.currentPage = _self.totalPages;
+            }
+            if(_self.currentPage < 1) {
+                _self.currentPage = 1;
+            }
+            
+            if(null !== _self.onChange) {
+                _self.onChange(_self.currentPage, e);
             }
         };
     },
