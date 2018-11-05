@@ -120,7 +120,13 @@ XPage.prototype = {
                 return;
             }
             
-            _self.currentPage = parseInt(e.target.value);
+            var v = e.target.value;
+            
+            if(/\D/.test(v)) {
+                return;
+            }
+            
+            _self.currentPage = parseInt(v);
             
             if(_self.currentPage > _self.totalPages) {
                 _self.currentPage = _self.totalPages;
