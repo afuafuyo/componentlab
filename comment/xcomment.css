@@ -18,6 +18,25 @@
 .xcomment-relative {
     position: relative;
 }
+.xcomment-separation {
+    position: relative;
+    height: 1px;
+    margin: 40px 0 40px 0;
+    font-size: 12px;
+    text-align: center;
+    background-color: #e5e9ef;
+}
+.xcomment-separation span {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    width: 200px;
+    height: 20px;
+    line-height: 20px;
+    margin-left: -100px;
+    color: #00a1d6;
+    background-color: #fff;
+}
 
 /**
  * form
@@ -302,7 +321,7 @@
 
 /* reply */
 .xcomment-reply {
-    padding: 10px 0;
+    padding-top: 10px;
 }
 .xcomment-reply-face {
     left: 0;
