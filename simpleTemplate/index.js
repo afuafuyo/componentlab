@@ -50,7 +50,7 @@ XTemplate.prototype = {
     },
     compile: function(html) {
         var parts = null;
-        // the index at which to start the next match
+        // the index at which to start the match
         var lastIndex = 0;
         
         while( null !== (parts = this.jsRegex.exec(html)) ) {
@@ -64,7 +64,7 @@ XTemplate.prototype = {
             lastIndex = this.jsRegex.lastIndex;
             
             var js = parts[1];
-            if('=' === js.substring(0, 1)) {
+            if('=' === js.charAt(0)) {
                 this.onJsPlaceholder(js.substring(1));
                 
             } else {
