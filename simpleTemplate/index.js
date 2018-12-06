@@ -1,7 +1,7 @@
 /**
  * 简单 js 模板引擎
  *
- * @author 月十
+ * @author afu
  *
  * eg.
  *
