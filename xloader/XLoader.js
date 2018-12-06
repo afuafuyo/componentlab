@@ -1,7 +1,7 @@
 /**
  * js loader
  *
- * @author afu
+ * @author 月十
  *
  * loader.config({
  *     baseUrl: 'http://xxx.com/js',

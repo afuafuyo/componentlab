@@ -1,7 +1,7 @@
 /**
  * canvas 图片裁剪
  *
- * @author afu
+ * @author 月十
  *
  * @param {String} id
  * @param {Object} options
