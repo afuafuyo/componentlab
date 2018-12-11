@@ -102,7 +102,7 @@ XPage.prototype = {
         this.mountNode.onclick = function(e) {
             var src = e.target;
             
-            if(1 === src.nodeType && 'A' === src.tagName.toUpperCase()) {
+            if(1 === src.nodeType && 'A' === src.nodeName.toUpperCase()) {
                 _self.currentPage = parseInt(src.getAttribute('data-page'));
                 _self.currentPage > _self.totalPages && (_self.currentPage = _self.totalPages);
                 _self.currentPage < 1 && (_self.currentPage = 1);
