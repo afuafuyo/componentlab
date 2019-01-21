@@ -281,7 +281,7 @@ function XCommentImage(xComment) {
             '<div class="mxcomment-widgets-image">' +
                 '<div><input class="mxcomment-widgets-image-input" type="text"></div>' +
                 '<div class="mxcomment-widgets-image-btn-wrapper">' +
-                    '<button type="button" data-role="imageinsert" class="mxcomment-widgets-image-btn">插入图片</button>' +
+                    '<button type="button" data-action="imageinsert" class="mxcomment-widgets-image-btn">插入图片</button>' +
                 '</div>' +
             '</div>';
 
@@ -296,7 +296,7 @@ function XCommentImage(xComment) {
         var end = this.xComment.textArea.selectionEnd;
         var value = this.xComment.textArea.value;
         
-        if('imageinsert' !== t.getAttribute('data-role')) {
+        if('imageinsert' !== t.getAttribute('data-action')) {
             return;
         }
         

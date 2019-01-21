@@ -90,7 +90,7 @@ XComment.prototype = {
         for(var i=0, len=this.configs.widgets.length; i<len; i++) {
             item = this.doc.createElement('button');
             item.setAttribute('type', 'button');
-            item.setAttribute('data-role', this.configs.widgets[i].name);
+            item.setAttribute('data-action', this.configs.widgets[i].name);
             item.className = 'xcomment-form-widget-item xcomment-form-widget-' + this.configs.widgets[i].name;
             item.innerHTML = this.configs.widgets[i].text;
             
@@ -125,22 +125,22 @@ XComment.prototype = {
     handlerWidgetClickEvent: function(e) {
         var target = e.target;
         
-        var role = target.getAttribute('data-role');
+        var action = target.getAttribute('data-action');
         
         // 只有触发事件的对象才处理
-        if(null === role) {
+        if(null === action) {
             return;
         }
         
-        if(undefined === this.widgetControllerInstances[role]) {
+        if(undefined === this.widgetControllerInstances[action]) {
             return;
         }
         
-        if(undefined === this.widgetControllerInstances[role].onClick) {
-            throw new Error('The widget: '+ role +' has no onClick method');
+        if(undefined === this.widgetControllerInstances[action].onClick) {
+            throw new Error('The widget: '+ action +' has no onClick method');
         }
         
-        this.widgetControllerInstances[role].onClick(this);
+        this.widgetControllerInstances[action].onClick(this);
     },
     
     /**
@@ -265,7 +265,7 @@ XEvent.prototype = {
         // 避免重复绑定事件
         if(undefined === this.$eventBinMap[type]) {
             // Listen the specified event
-            document.body.addEventListener(type, function(e) {
+            document.addEventListener(type, function(e) {
                 _self.$eventProxy(e);
             }, false);
         }
@@ -344,13 +344,12 @@ XCommentUIPop.prototype = {
 XComment.registerUI('pop', XCommentUIPop);
 
 /**
- * emoji widget
+ * emotion widget
  */
 function XCommentEmoji(button, xComment) {
     this.button = button;
     this.xComment = xComment;
     this.pop = null;
-    this.closed = true;
     
     this.init = function() {
         this.pop = XComment.getUI('pop');
@@ -384,7 +383,12 @@ function XCommentEmoji(button, xComment) {
         XComment.event.addEventListener(document.body, 'click', this.handlerPopClose, this);
     };
     
+    // 插入表情
     this.handlerPopClick = function(e) {
+        if(e.stopPropagation) {
+            e.stopPropagation();
+        }
+        
         var target = e.target;
         var role = target.getAttribute('data-role');
         
@@ -406,41 +410,23 @@ function XCommentEmoji(button, xComment) {
         }
     };
     
-    this.handlerPopClose = function(e) {        
-        if(this.closed) {
+    this.handlerPopClose = function(e) {
+        var t = e.target;
+        if('emoji' === t.getAttribute('data-action')) {
             return;
         }
         
-        var target = e.target;
-        var shouldClose = true;
-        
-        while(null !== target && 'BODY' !== target.nodeName.toUpperCase()) {
-            if('xcomment-form-widget' === target.className) {
-                shouldClose = false;
-                
-                break;
-            }
-            
-            target = target.parentNode;
-        }
-                    
-        if(shouldClose) {
-            this.close();
-        }
+        this.close();
     };
     
     this.close = function() {
         if(null !== this.xComment.widgetsWrapper.querySelector('.xcomment-form-pop')) {
             this.xComment.widgetsWrapper.removeChild(this.pop);
         }
-        
-        this.closed = true;
     };
     
     this.render = function() {
         this.xComment.widgetsWrapper.appendChild(this.pop);
-        
-        this.closed = false;
     };
     
     this.onClick = function(xComment) {        
