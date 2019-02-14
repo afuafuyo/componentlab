@@ -211,12 +211,15 @@
     padding: 12px 0 12px 0;
     border-bottom: 1px solid #e5e9ef;
 }
-.xcomment-user {
+.xcomment-reply-wrapper {
+    margin-left: 85px;
+}
+.xcomment-nick {
     font-size: 12px;
     font-weight: bold;
     line-height: 26px;
 }
-.xcomment-user a {
+.xcomment-nick a {
     color: #6d757a;
     text-decoration: none;
 }
