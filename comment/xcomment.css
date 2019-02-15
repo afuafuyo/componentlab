@@ -42,7 +42,7 @@
  * form
  */
 .xcomment-form {
-    margin: 10px 0;
+    margin: 20px 0;
 }
 .xcomment-form-btn {
     position: absolute;
@@ -64,7 +64,8 @@
 }
 .xcomment-form-face {
     position: absolute;
-    left: 16px;
+    top: 0;
+    left: 0;
 }
 .xcomment-form-avatar {
     width: 50px;
@@ -72,7 +73,7 @@
     border-radius: 25px;
 }
 .xcomment-form-content {
-    margin-left: 85px;
+    margin-left: 70px;
 }
 .xcomment-form-textarea {
     display: inline-block;
@@ -101,7 +102,7 @@
 .xcomment-form-widget {
     position: relative;
     color: #99a2aa;
-    margin-left: 85px;
+    margin-left: 70px;
     font-size: 12px;
 }
 .xcomment-form-widget a {
@@ -196,8 +197,8 @@
  */
 .xcomment-face {
     position: absolute;
-    top: 16px;
-    left: 16px;
+    top: 0;
+    left: 0;
 }
 .xcomment-avatar {
     width: 50px;
@@ -205,14 +206,11 @@
     border-radius: 25px;
 }
 .xcomment-content {
-    margin-left: 85px;    
+    margin-left: 70px;    
 }
 .xcomment-content-toplevel {
-    padding: 12px 0 12px 0;
+    padding-bottom: 12px;
     border-bottom: 1px solid #e5e9ef;
-}
-.xcomment-reply-wrapper {
-    margin-left: 85px;
 }
 .xcomment-nick {
     font-size: 12px;
@@ -324,7 +322,10 @@
 
 /* reply */
 .xcomment-reply {
-    padding-top: 10px;
+    margin-left: 70px;
+}
+.xcomment-reply-item {
+    margin-top: 10px;
 }
 .xcomment-reply-face {
     left: 0;
@@ -334,7 +335,7 @@
     height: 26px;
     border-radius: 13px;
 }
-.xcomment-reply-content {
+.xcomment-content-reply {
     margin-left: 40px;
 }
 .xcomment-reply-text {
