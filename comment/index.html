@@ -26,12 +26,16 @@
 </div>
 <!-- // form -->
 
-<div class="xcomment-header">
+<div class="xcomment-header" data-role="filter">
     <a href="javascript:;" class="active">全部评论</a>
     <a href="javascript:;">按热度排序</a>
 </div>
-<div >
+<div data-role="list">
 
+    <!-- loading -->
+    <div class="xcomment-loading"><i></i></div>
+    
+    <!-- item -->
     <div class="xcomment-relative xcomment-item">
         <section class="xcomment-face">
             <img class="xcomment-avatar" src="https://i2.hdslb.com/bfs/face/b001dcba7b7d0de387abb9adefe4e409ba9e03f4.jpg@52w_52h.webp">
@@ -119,6 +123,7 @@
         </section>
         <!-- // reply -->
     </div>
+    <!-- // item -->
     
     <div class="xcomment-separation">
         <span>以上为热门评论</span>

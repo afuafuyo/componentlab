@@ -501,7 +501,7 @@ XComment.registerWidgetController('emoji', XCommentEmoji);
 /**
  * list
  */
-function XCommentList() {
+function XCommentList(options) {
     this.doc = document;
     
     this.wrapper = null;
@@ -510,8 +510,8 @@ function XCommentList() {
     
     this.filterHtml =
 '<div class="xcomment-header">' +
-    '<a href="javascript:;" class="active">全部评论</a>' +
-    '<a href="javascript:;">按热度排序</a>' +
+    '<a href="javascript:;" class="active" data-action="filterall">全部评论</a>' +
+    '<a href="javascript:;" data-action="filterhot">按热度排序</a>' +
 '</div>';
 
     this.listHtml =
@@ -536,9 +536,9 @@ function XCommentList() {
                 '<span class="xcomment-widget-margin">#<%= list[i].floor %></span>' +
                 '<span class="xcomment-widget-margin">来自<a href="javascript:;"><%= list[i].platform %></a></span>' +
                 '<span class="xcomment-widget-margin"><%= list[i].posttime %></span>' +
-                '<span class="xcomment-widget-prize xcomment-widget-margin">' +
-                    '<i class="xcomment-icon xcomment-icon-prize"></i>' +
-                    '<span><%= list[i].like %></span>' +
+                '<span class="xcomment-widget-prize xcomment-widget-margin" data-origin="<%= list[i].like %>" data-id="<%= list[i].id %>">' +
+                    '<i data-action="like" class="xcomment-icon xcomment-icon-prize"></i>' +
+                    '<span data-action="like"><%= list[i].like %></span>' +
                 '</span>' +
                 '<span class="xcomment-btn">回复</span>' +
             '</div>' +
@@ -564,9 +564,9 @@ function XCommentList() {
                             '</div>' +
                         '</div>' +
                         '<span class="xcomment-widget-margin"><%= list[i].replies[x].posttime %></span>' +
-                        '<span class="xcomment-widget-prize xcomment-widget-margin">' +
-                            '<i class="xcomment-icon xcomment-icon-prize"></i>' +
-                            '<span><%= list[i].replies[x].like %></span>' +
+                        '<span class="xcomment-widget-prize xcomment-widget-margin" data-origin="<%= list[i].replies[x].like %>" data-id="<%= list[i].replies[x].id %>">' +
+                            '<i data-action="like" class="xcomment-icon xcomment-icon-prize"></i>' +
+                            '<span data-action="like"><%= list[i].replies[x].like %></span>' +
                         '</span>' +
                         '<span class="xcomment-btn">回复</span>' +
                     '</div>' +
@@ -579,16 +579,24 @@ function XCommentList() {
 '<% } %>';
     
     this.configs = {
-        
+        onFilter: null,
+        onLike: null
     };
     this.template = new XTemplate();
     
-    this.init();
+    this.init(options);
+    this.bindEvent();
 }
 
 XCommentList.prototype = {
     constructor: XCommentList,
-    init: function() {
+    init: function(options) {
+        if(undefined !== options) {
+            for(var k in options) {
+                this.configs[k] = options[k];
+            }
+        }
+        
         // template
         this.template.compile(this.listHtml);
         
@@ -597,16 +605,46 @@ XCommentList.prototype = {
         
         // filter
         this.filterWrapper = this.doc.createElement('div');
-        this.filterWrapper.setAttribute('data-role', 'listfilter');
+        this.filterWrapper.setAttribute('data-role', 'filter');
         this.filterWrapper.innerHTML = this.filterHtml;
         
         // list
         this.listWrapper = this.doc.createElement('div');
         this.listWrapper.setAttribute('data-role', 'list');
+        // 首次用 loading 填充 list
+        this.listWrapper.innerHTML = '<div class="xcomment-loading"><i></i></div>';
         
         
         this.wrapper.appendChild(this.filterWrapper);
         this.wrapper.appendChild(this.listWrapper);
+    },
+    bindEvent: function() {
+        var _self = this;
+        
+        this.wrapper.onclick = function(e) {
+            _self.handlerClick(e);
+        };
+    },
+    handlerClick: function(e) {
+        var target = e.target;
+        var action = target.getAttribute('data-action');
+        
+        // filter
+        if('filterall' === action || 'filterhot' === action) {
+            if(null !== this.configs.onFilter) {
+                this.configs.onFilter(action);
+            }
+            
+            return;
+        }
+        
+        if('like' === action) {
+            if(null !== this.configs.onLike) {
+                this.configs.onLike(target.parentNode.getAttribute('data-id'));
+            }
+            
+            return;
+        }
     },
     
     /**
