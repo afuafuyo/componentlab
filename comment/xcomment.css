@@ -62,6 +62,12 @@
     background-color: #00b5e5;
     border-color: #00b5e5;
 }
+.xcomment-form-btn[disabled="disabled"] {
+    background-color: #e5e9ef;
+    border-color: #e5e9ef;
+    color: #b8c0cc;
+    cursor: default;
+}
 .xcomment-form-face {
     position: absolute;
     top: 0;
@@ -75,8 +81,21 @@
 .xcomment-form-content {
     margin-left: 70px;
 }
+.xcomment-form-content-login {
+    color: #555;
+    width: 100%;
+    height: 68px;
+    line-height: 68px;
+    text-align: center;
+    font-size: 14px;
+    background-color: #e5e9ef;
+}
+.xcomment-form-content-login a {
+    color: #00a1d6;
+    text-decoration: none;
+}
 .xcomment-form-textarea {
-    display: inline-block;
+    display: block;
     width: 100%;
     height: 68px;
     padding: 5px 10px;
@@ -100,9 +119,9 @@
     background-color: #fff;
 }
 .xcomment-form-widget {
-    position: relative;
-    color: #99a2aa;
+    margin-top: 5px;
     margin-left: 70px;
+    color: #99a2aa;
     font-size: 12px;
 }
 .xcomment-form-widget a {
@@ -195,6 +214,9 @@
 /**
  * comment item
  */
+.xcomment-item {
+    margin-top: 20px;
+}
 .xcomment-face {
     position: absolute;
     top: 0;
@@ -299,7 +321,6 @@
 
 /* header */
 .xcomment-header {
-    margin-bottom: 20px;
     border-bottom: 1px solid #e5e9ef;
 }
 .xcomment-header a {

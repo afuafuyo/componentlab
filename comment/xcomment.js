@@ -9,12 +9,15 @@ function XComment(options) {
     this.submitButton = null;
     this.avatarWrapper = null;
     this.contentWrapper = null;
+    this.loginMask = null;
     this.textArea = null;
     this.widgetsWrapper = null;
     this.widgetControllerInstances = {};
     
     this.configs = {
-        onSubmit: function() {},
+        isLogin: false,
+        onLogin: null,
+        onSubmit: null,
         widgets: [{
             name: 'emoji',
             text: '表情'
@@ -67,25 +70,43 @@ XComment.prototype = {
     },
     initContentStructure: function() {
         this.contentWrapper = this.doc.createElement('section');
-        this.contentWrapper.className = 'xcomment-form-content';
+        this.contentWrapper.className = 'xcomment-relative xcomment-form-content';
         
-        this.textArea = this.doc.createElement('textarea');
-        this.textArea.setAttribute('placeholder', this.configs.placeholder);
-        this.textArea.className = 'xcomment-form-textarea';
+        if(this.configs.isLogin) {
+            this.textArea = this.doc.createElement('textarea');
+            this.textArea.setAttribute('placeholder', this.configs.placeholder);
+            this.textArea.className = 'xcomment-form-textarea';
+            
+            this.contentWrapper.appendChild(this.textArea);
+            
+            return;
+        }
         
-        this.contentWrapper.appendChild(this.textArea);
+        this.loginMask = this.doc.createElement('div');
+        this.loginMask.className = 'xcomment-form-content-login';
+        this.loginMask.innerHTML = '你还没有登录，请&nbsp;<a href="javascript:;" data-action="login">登录</a>';
+        
+        this.contentWrapper.appendChild(this.loginMask);
     },
     initWidgetsStructure: function() {
         this.widgetsWrapper = this.doc.createElement('section');
-        this.widgetsWrapper.className = 'xcomment-form-widget';
+        this.widgetsWrapper.className = 'xcomment-relative xcomment-form-widget';
         
         // submit button
         this.submitButton = this.doc.createElement('button');
         this.submitButton.setAttribute('type', 'button');
+        if(!this.configs.isLogin) {
+            this.submitButton.setAttribute('disabled', 'disabled');
+        }
         this.submitButton.className = 'xcomment-form-btn';
         this.submitButton.innerHTML = '发表评论';
         this.widgetsWrapper.appendChild(this.submitButton);
         
+        
+        // 挂件
+        if(!this.configs.isLogin) {
+            return;
+        }
         var item = null;
         for(var i=0, len=this.configs.widgets.length; i<len; i++) {
             item = this.doc.createElement('button');
@@ -114,6 +135,10 @@ XComment.prototype = {
         };
         
         this.submitButton.onclick = function() {
+            if(null === _self.configs.onSubmit) {
+                return;
+            }
+            
             _self.configs.onSubmit(_self.getValue());
         }
     },
@@ -150,9 +175,17 @@ XComment.prototype = {
         return this.container;
     },
     clear: function() {
+        if(null === this.textArea) {
+            return;
+        }
+        
         this.textArea.value = '';
     },
     getValue: function() {
+        if(null === this.textArea) {
+            return '';
+        }
+        
         return this.textArea.value;
     },
     destroy: function() {
@@ -166,8 +199,19 @@ XComment.prototype = {
         
         // 删除主发布器
         this.deleteEvent();
+        
+        // widgets
+        this.widgetsWrapper.innerHTML = '';
+        this.submitButton = null;
         this.widgetsWrapper = null;
+        
+        // content
+        this.contentWrapper.innerHTML = '';
+        this.textArea = null;
+        this.loginMask = null;
         this.contentWrapper = null;
+        
+        // avatar
         this.avatarWrapper = null;
         
         this.container.parentNode.removeChild(this.container);
@@ -452,3 +496,132 @@ function XCommentEmoji(button, xComment) {
     };
 }
 XComment.registerWidgetController('emoji', XCommentEmoji);
+
+
+/**
+ * list
+ */
+function XCommentList() {
+    this.doc = document;
+    
+    this.wrapper = null;
+    this.filterWrapper = null;
+    this.listWrapper = null;
+    
+    this.filterHtml =
+'<div class="xcomment-header">' +
+    '<a href="javascript:;" class="active">全部评论</a>' +
+    '<a href="javascript:;">按热度排序</a>' +
+'</div>';
+
+    this.listHtml =
+'<% var list=data.comments; for(var i=0, len=list.length; i<len; i++){ %>' +
+    '<div class="xcomment-relative xcomment-item">' +
+        '<section class="xcomment-face">' +
+            '<img class="xcomment-avatar" src="<%= list[i].avatar %>">' +
+        '</section>' +
+        '<section class="xcomment-content xcomment-content-toplevel">' +
+            '<div class="xcomment-nick">' +
+                '<a href="javascript:;"><%= list[i].nick %></a>' +
+            '</div>' +
+            '<div class="xcomment-text"><%= list[i].content %></div>' +
+            '<div class="xcomment-widget">' +
+                '<div class="xcomment-operation">' +
+                    '<i class="xcomment-icon xcomment-icon-dot"></i>' +
+                    '<div class="xcomment-operation-drop">' +
+                        '<a class="xcomment-operation-drop-item" href="javascript:;">举报</a>' +
+                        '<a class="xcomment-operation-drop-item" href="javascript:;">加入黑名单</a>' +
+                    '</div>' +
+                '</div>' +
+                '<span class="xcomment-widget-margin">#<%= list[i].floor %></span>' +
+                '<span class="xcomment-widget-margin">来自<a href="javascript:;"><%= list[i].platform %></a></span>' +
+                '<span class="xcomment-widget-margin"><%= list[i].posttime %></span>' +
+                '<span class="xcomment-widget-prize xcomment-widget-margin">' +
+                    '<i class="xcomment-icon xcomment-icon-prize"></i>' +
+                    '<span><%= list[i].like %></span>' +
+                '</span>' +
+                '<span class="xcomment-btn">回复</span>' +
+            '</div>' +
+        '</section>' +
+        
+        '<section class="xcomment-reply">' +
+            '<% if(list[i].replies && list[i].replies.length > 0) { for(var x=0, l=list[i].replies.length; x<l; x++){ %>' +
+            '<div class="xcomment-relative xcomment-reply-item">' +
+                '<section class="xcomment-face">' +
+                    '<img class="xcomment-avatar xcomment-reply-avatar" src="<%= list[i].replies[x].avatar %>">' +
+                '</section>' +
+                '<section class="xcomment-content xcomment-content-reply">' +
+                    '<div class="xcomment-nick">' +
+                        '<a href="javascript:;"><%= list[i].replies[x].nick %></a>' +
+                        '<span class="xcomment-text xcomment-reply-text"><%= list[i].replies[x].content %></span>' +
+                    '</div>' +
+                    '<div class="xcomment-widget xcomment-reply-widget">' +
+                        '<div class="xcomment-operation">' +
+                            '<i class="xcomment-icon xcomment-icon-dot"></i>' +
+                           '<div class="xcomment-operation-drop">' +
+                                '<a class="xcomment-operation-drop-item" href="javascript:;">举报</a>' +
+                                '<a class="xcomment-operation-drop-item" href="javascript:;">加入黑名单</a>' +
+                            '</div>' +
+                        '</div>' +
+                        '<span class="xcomment-widget-margin"><%= list[i].replies[x].posttime %></span>' +
+                        '<span class="xcomment-widget-prize xcomment-widget-margin">' +
+                            '<i class="xcomment-icon xcomment-icon-prize"></i>' +
+                            '<span><%= list[i].replies[x].like %></span>' +
+                        '</span>' +
+                        '<span class="xcomment-btn">回复</span>' +
+                    '</div>' +
+                '</section>' +
+            '</div>' +
+            '<% }} %>' +
+        '</section>' +
+        
+    '</div>' +
+'<% } %>';
+    
+    this.configs = {
+        
+    };
+    this.template = new XTemplate();
+    
+    this.init();
+}
+
+XCommentList.prototype = {
+    constructor: XCommentList,
+    init: function() {
+        // template
+        this.template.compile(this.listHtml);
+        
+        // wrapper
+        this.wrapper = this.doc.createElement('div');
+        
+        // filter
+        this.filterWrapper = this.doc.createElement('div');
+        this.filterWrapper.setAttribute('data-role', 'listfilter');
+        this.filterWrapper.innerHTML = this.filterHtml;
+        
+        // list
+        this.listWrapper = this.doc.createElement('div');
+        this.listWrapper.setAttribute('data-role', 'list');
+        
+        
+        this.wrapper.appendChild(this.filterWrapper);
+        this.wrapper.appendChild(this.listWrapper);
+    },
+    
+    /**
+     * 获取 DOM
+     */
+    getDom: function() {
+        return this.wrapper;
+    },
+    
+    /**
+     * 使用数据渲染列表
+     */
+    renderList: function(data) {
+        var html = this.template.run(data);
+        
+        this.listWrapper.innerHTML = html;
+    }
+};
