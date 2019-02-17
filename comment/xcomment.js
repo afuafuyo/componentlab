@@ -157,6 +157,10 @@ XComment.prototype = {
         this.widgetsWrapper.onmousedown = null;
         this.widgetsWrapper.onclick = null;
         this.submitButton.onclick = null;
+        
+        if(null !== this.loginMask) {
+            this.loginMask.onclick = null;
+        }
     },
     handlerWidgetClickEvent: function(e) {
         var target = e.target;
@@ -208,7 +212,7 @@ XComment.prototype = {
         }
         this.widgetControllerInstances = null;
         
-        // 删除主发布器
+        // 删除事件
         this.deleteEvent();
         
         // widgets

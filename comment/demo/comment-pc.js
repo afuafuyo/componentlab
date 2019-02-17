@@ -10,7 +10,6 @@ function CommentAndList(containerId, configs) {
     
     this.configs = {
         isLogin: false,
-        onLogin: null,
         formAvatar: ''
     };
     
@@ -30,8 +29,10 @@ CommentAndList.prototype = {
         // form
         this.commentForm = new XComment({
             isLogin: this.configs.isLogin,
-            onLogin: this.configs.onLogin,
             avatar: this.configs.formAvatar,
+            onLogin: function() {
+                _self.login();
+            },
             onSubmit: function(v) {
                 _self.postComment(v);
             }
@@ -40,8 +41,10 @@ CommentAndList.prototype = {
         // list
         this.commentList = new XCommentList({
             isLogin: this.configs.isLogin,
-            onLogin: this.configs.onLogin,
             formAvatar: this.configs.formAvatar,
+            onLogin: function() {
+                _self.login();
+            },
             onFilter: function(action) {
                 _self.filterList(action);
             },
@@ -50,8 +53,14 @@ CommentAndList.prototype = {
             },
             onReply: function(id, content) {
                 _self.reply(id, content);
+            },
+            onReport: function(id) {
+                console.log(id)
             }
         });
+    },
+    login: function() {
+        console.log('login');
     },
     postComment: function(v) {
         console.log(v);
@@ -170,8 +179,7 @@ function XCommentList(options) {
                 '<div class="xcomment-operation">' +
                     '<i class="xcomment-icon xcomment-icon-dot"></i>' +
                     '<div class="xcomment-operation-drop">' +
-                        '<a class="xcomment-operation-drop-item" href="javascript:;">举报</a>' +
-                        '<a class="xcomment-operation-drop-item" href="javascript:;">加入黑名单</a>' +
+                        '<a class="xcomment-operation-drop-item" href="javascript:;" data-action="report" data-id="<%= list[i].id %>">举报</a>' +
                     '</div>' +
                 '</div>' +
                 '<span class="xcomment-widget-margin">#<%= list[i].floor %></span>' +
@@ -201,8 +209,7 @@ function XCommentList(options) {
                         '<div class="xcomment-operation">' +
                             '<i class="xcomment-icon xcomment-icon-dot"></i>' +
                            '<div class="xcomment-operation-drop">' +
-                                '<a class="xcomment-operation-drop-item" href="javascript:;">举报</a>' +
-                                '<a class="xcomment-operation-drop-item" href="javascript:;">加入黑名单</a>' +
+                                '<a class="xcomment-operation-drop-item" href="javascript:;" data-action="report" data-id="<%= list[i].replies[x].id %>">举报</a>' +
                             '</div>' +
                         '</div>' +
                         '<span class="xcomment-widget-margin"><%= list[i].replies[x].posttime %></span>' +
@@ -227,7 +234,8 @@ function XCommentList(options) {
         formAvatar: '',
         onFilter: null,
         onLike: null,
-        onReply: null
+        onReply: null,
+        onReport: null
     };
     this.template = new XTemplate();
     
@@ -329,6 +337,17 @@ XCommentList.prototype = {
             }
             
             this.nowReplyId = id;
+            
+            return;
+        }
+        
+        // 举报
+        if('report' === action) {
+            var id = target.getAttribute('data-id');
+            
+            this.onReport(id);
+            
+            return;
         }
     },
     // 点击过滤 tab
@@ -362,6 +381,11 @@ XCommentList.prototype = {
             this.replyForm = null;
             
             this.configs.onReply(this.nowReplyId, v);
+        }
+    },
+    onReport: function(id) {
+        if(null !== this.configs.onReport) {
+            this.configs.onReport(id);
         }
     },
     
