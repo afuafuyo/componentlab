@@ -119,6 +119,7 @@
     background-color: #fff;
 }
 .xcomment-form-widget {
+    height: 30px;
     margin-top: 5px;
     margin-left: 70px;
     color: #99a2aa;
@@ -320,7 +321,8 @@
 .xcomment-widget-prize {
     cursor: pointer;
 }
-.xcomment-widget-prize:hover .xcomment-icon-prize {
+.xcomment-widget-prize:hover .xcomment-icon-prize,
+.xcomment-widget-prize[data-liked="1"] .xcomment-icon-prize {
     background-position: -10px -87px;
 }
 .xcomment-btn {

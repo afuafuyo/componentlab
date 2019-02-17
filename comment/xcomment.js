@@ -23,7 +23,7 @@ function XComment(options) {
             text: '表情'
         }],
         placeholder: '请自觉遵守互联网相关的政策法规，严禁发布色情、暴力、反动的言论。',
-        avatar: 'https://i2.hdslb.com/bfs/face/b001dcba7b7d0de387abb9adefe4e409ba9e03f4.jpg@52w_52h.webp'
+        avatar: ''
     };
     this.init(options);
 }
@@ -127,19 +127,30 @@ XComment.prototype = {
         var _self = this;
         
         // widgets
-        this.widgetsWrapper.onmousedown = function() {
+        this.widgetsWrapper.onmousedown = function(e) {
             return false;
         };
         this.widgetsWrapper.onclick = function(e) {
             _self.handlerWidgetClickEvent(e);
         };
         
-        this.submitButton.onclick = function() {
+        // submit
+        this.submitButton.onclick = function(e) {
             if(null === _self.configs.onSubmit) {
                 return;
             }
             
             _self.configs.onSubmit(_self.getValue());
+        }
+        
+        // login
+        if(null !== this.loginMask) {
+            this.loginMask.onclick = function(e) {
+                var t = e.target;
+                if('login' === t.getAttribute('data-action') && null !== _self.configs.onLogin) {
+                    _self.configs.onLogin();
+                }
+            };
         }
     },
     deleteEvent: function() {
@@ -496,170 +507,3 @@ function XCommentEmoji(button, xComment) {
     };
 }
 XComment.registerWidgetController('emoji', XCommentEmoji);
-
-
-/**
- * list
- */
-function XCommentList(options) {
-    this.doc = document;
-    
-    this.wrapper = null;
-    this.filterWrapper = null;
-    this.listWrapper = null;
-    
-    this.filterHtml =
-'<div class="xcomment-header">' +
-    '<a href="javascript:;" class="active" data-action="filterall">全部评论</a>' +
-    '<a href="javascript:;" data-action="filterhot">按热度排序</a>' +
-'</div>';
-
-    this.listHtml =
-'<% var list=data.comments; for(var i=0, len=list.length; i<len; i++){ %>' +
-    '<div class="xcomment-relative xcomment-item">' +
-        '<section class="xcomment-face">' +
-            '<img class="xcomment-avatar" src="<%= list[i].avatar %>">' +
-        '</section>' +
-        '<section class="xcomment-content xcomment-content-toplevel">' +
-            '<div class="xcomment-nick">' +
-                '<a href="javascript:;"><%= list[i].nick %></a>' +
-            '</div>' +
-            '<div class="xcomment-text"><%= list[i].content %></div>' +
-            '<div class="xcomment-widget">' +
-                '<div class="xcomment-operation">' +
-                    '<i class="xcomment-icon xcomment-icon-dot"></i>' +
-                    '<div class="xcomment-operation-drop">' +
-                        '<a class="xcomment-operation-drop-item" href="javascript:;">举报</a>' +
-                        '<a class="xcomment-operation-drop-item" href="javascript:;">加入黑名单</a>' +
-                    '</div>' +
-                '</div>' +
-                '<span class="xcomment-widget-margin">#<%= list[i].floor %></span>' +
-                '<span class="xcomment-widget-margin">来自<a href="javascript:;"><%= list[i].platform %></a></span>' +
-                '<span class="xcomment-widget-margin"><%= list[i].posttime %></span>' +
-                '<span class="xcomment-widget-prize xcomment-widget-margin" data-origin="<%= list[i].like %>" data-id="<%= list[i].id %>">' +
-                    '<i data-action="like" class="xcomment-icon xcomment-icon-prize"></i>' +
-                    '<span data-action="like"><%= list[i].like %></span>' +
-                '</span>' +
-                '<span class="xcomment-btn">回复</span>' +
-            '</div>' +
-        '</section>' +
-        
-        '<section class="xcomment-reply">' +
-            '<% if(list[i].replies && list[i].replies.length > 0) { for(var x=0, l=list[i].replies.length; x<l; x++){ %>' +
-            '<div class="xcomment-relative xcomment-reply-item">' +
-                '<section class="xcomment-face">' +
-                    '<img class="xcomment-avatar xcomment-reply-avatar" src="<%= list[i].replies[x].avatar %>">' +
-                '</section>' +
-                '<section class="xcomment-content xcomment-content-reply">' +
-                    '<div class="xcomment-nick">' +
-                        '<a href="javascript:;"><%= list[i].replies[x].nick %></a>' +
-                        '<span class="xcomment-text xcomment-reply-text"><%= list[i].replies[x].content %></span>' +
-                    '</div>' +
-                    '<div class="xcomment-widget xcomment-reply-widget">' +
-                        '<div class="xcomment-operation">' +
-                            '<i class="xcomment-icon xcomment-icon-dot"></i>' +
-                           '<div class="xcomment-operation-drop">' +
-                                '<a class="xcomment-operation-drop-item" href="javascript:;">举报</a>' +
-                                '<a class="xcomment-operation-drop-item" href="javascript:;">加入黑名单</a>' +
-                            '</div>' +
-                        '</div>' +
-                        '<span class="xcomment-widget-margin"><%= list[i].replies[x].posttime %></span>' +
-                        '<span class="xcomment-widget-prize xcomment-widget-margin" data-origin="<%= list[i].replies[x].like %>" data-id="<%= list[i].replies[x].id %>">' +
-                            '<i data-action="like" class="xcomment-icon xcomment-icon-prize"></i>' +
-                            '<span data-action="like"><%= list[i].replies[x].like %></span>' +
-                        '</span>' +
-                        '<span class="xcomment-btn">回复</span>' +
-                    '</div>' +
-                '</section>' +
-            '</div>' +
-            '<% }} %>' +
-        '</section>' +
-        
-    '</div>' +
-'<% } %>';
-    
-    this.configs = {
-        onFilter: null,
-        onLike: null
-    };
-    this.template = new XTemplate();
-    
-    this.init(options);
-    this.bindEvent();
-}
-
-XCommentList.prototype = {
-    constructor: XCommentList,
-    init: function(options) {
-        if(undefined !== options) {
-            for(var k in options) {
-                this.configs[k] = options[k];
-            }
-        }
-        
-        // template
-        this.template.compile(this.listHtml);
-        
-        // wrapper
-        this.wrapper = this.doc.createElement('div');
-        
-        // filter
-        this.filterWrapper = this.doc.createElement('div');
-        this.filterWrapper.setAttribute('data-role', 'filter');
-        this.filterWrapper.innerHTML = this.filterHtml;
-        
-        // list
-        this.listWrapper = this.doc.createElement('div');
-        this.listWrapper.setAttribute('data-role', 'list');
-        // 首次用 loading 填充 list
-        this.listWrapper.innerHTML = '<div class="xcomment-loading"><i></i></div>';
-        
-        
-        this.wrapper.appendChild(this.filterWrapper);
-        this.wrapper.appendChild(this.listWrapper);
-    },
-    bindEvent: function() {
-        var _self = this;
-        
-        this.wrapper.onclick = function(e) {
-            _self.handlerClick(e);
-        };
-    },
-    handlerClick: function(e) {
-        var target = e.target;
-        var action = target.getAttribute('data-action');
-        
-        // filter
-        if('filterall' === action || 'filterhot' === action) {
-            if(null !== this.configs.onFilter) {
-                this.configs.onFilter(action);
-            }
-            
-            return;
-        }
-        
-        if('like' === action) {
-            if(null !== this.configs.onLike) {
-                this.configs.onLike(target.parentNode.getAttribute('data-id'));
-            }
-            
-            return;
-        }
-    },
-    
-    /**
-     * 获取 DOM
-     */
-    getDom: function() {
-        return this.wrapper;
-    },
-    
-    /**
-     * 使用数据渲染列表
-     */
-    renderList: function(data) {
-        var html = this.template.run(data);
-        
-        this.listWrapper.innerHTML = html;
-    }
-};
