@@ -383,6 +383,6 @@
 .xcomment-reply-widget .xcomment-icon-dot {
     display: none;
 }
-.xcomment-reply:hover .xcomment-icon-dot {
+.xcomment-reply-widget:hover .xcomment-icon-dot {
     display: block;
 }
