@@ -51,17 +51,17 @@ XPage.prototype = {
         switch(flag) {
             case 1:
                 str = this.configs.showJump
-                    ? '<div class="x-page-jump">总共' + this.totalPages + '页，跳转到<input type="text" class="x-page-jump-input" />页</div>'
+                    ? '<div data-role="x-page-jump">总共' + this.totalPages + '页，跳转到<input type="text" />页</div>'
                     : '';
                 break;
             case 2:
                 str = this.configs.showHome
-                    ? '<a data-page="1" href="javascript:;" class="x-page-item">首页</a>'
+                    ? '<a data-page="1" href="javascript:;">首页</a>'
                     : '';
                 break;
             case 3:
                 str = this.configs.showPrevious
-                    ? '<a data-page="'+ (this.currentPage-1) +'" href="javascript:;" class="x-page-item">上一页</a>'
+                    ? '<a data-page="'+ (this.currentPage-1) +'" href="javascript:;">上一页</a>'
                     : '';
                 break;
             case 4:
@@ -69,23 +69,23 @@ XPage.prototype = {
                 var counter = 0, tmp = '';
                 
                 for(var i=this.currentPage-half; i<this.currentPage; i++) {
-                    i > 0 && (tmp += '<a data-page="'+ i +'" href="javascript:;" class="x-page-item">'+ i +'</a>', counter++);
+                    i > 0 && (tmp += '<a data-page="'+ i +'" href="javascript:;">'+ i +'</a>', counter++);
                 }
-                tmp += '<span class="x-page-item x-page-active">'+ this.currentPage +'</span>';
+                tmp += '<span data-role="current">'+ this.currentPage +'</span>';
                 for(var i=this.currentPage+1; i<=this.currentPage+half+half-counter; i++) {
-                    i <= this.totalPages && (tmp += '<a data-page="'+ i +'" href="javascript:;" class="x-page-item">'+ i +'</a>');
+                    i <= this.totalPages && (tmp += '<a data-page="'+ i +'" href="javascript:;">'+ i +'</a>');
                 }
                 
                 str = this.configs.showItem ? tmp : '';
                 break;
             case 5:
                 str = this.configs.showNext
-                    ? '<a data-page="'+ (this.currentPage+1) +'" href="javascript:;" class="x-page-item">下一页</a>'
+                    ? '<a data-page="'+ (this.currentPage+1) +'" href="javascript:;">下一页</a>'
                     : '';
                 break;
             case 6:
                 str = this.configs.showLast
-                    ? '<a data-page="'+ this.totalPages +'" href="javascript:;" class="x-page-item">尾页</a>'
+                    ? '<a data-page="'+ this.totalPages +'" href="javascript:;">尾页</a>'
                     : '';
                 break;
             default:
