@@ -25,6 +25,7 @@ function XPage(totalRecords, pageSize) {
     this.currentPage = 1;
     this.onChange = null;
     this.configs = {
+        className: 'x-page',
         linkItemNumber: 7,
         
         showHome: true,
@@ -141,7 +142,7 @@ XPage.prototype = {
         };
     },
     getPageString: function(){
-        var ret = '<div class="x-page">' +
+        var ret = '<div class="'+ this.configs.className +'">' +
             this.getSegment(1) +
             this.getSegment(2) +
             this.getSegment(3) +
