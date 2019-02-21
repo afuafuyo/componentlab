@@ -44,18 +44,6 @@ CommentAndList.prototype = {
             formAvatar: this.configs.formAvatar,
             onLogin: function() {
                 _self.login();
-            },
-            onFilter: function(action) {
-                _self.filterList(action);
-            },
-            onLike: function(isLiked, id) {
-                _self.like(isLiked, id);
-            },
-            onReply: function(id, content) {
-                _self.reply(id, content);
-            },
-            onReport: function(id) {
-                console.log(id)
             }
         });
     },
@@ -64,9 +52,6 @@ CommentAndList.prototype = {
     },
     postComment: function(v) {
         console.log(v);
-    },
-    filterList: function(action) {
-        console.log(action)
     },
     like: function(isLiked, id) {
         console.log(isLiked, id)
@@ -231,11 +216,7 @@ function XCommentList(options) {
     this.configs = {
         isLogin: false,
         onLogin: false,
-        formAvatar: '',
-        onFilter: null,
-        onLike: null,
-        onReply: null,
-        onReport: null
+        formAvatar: ''
     };
     this.template = new XTemplate();
     
@@ -350,16 +331,20 @@ XCommentList.prototype = {
             return;
         }
     },
-    // 点击过滤 tab
     onFilter: function(action) {
-        if(null !== this.configs.onFilter) {
-            this.configs.onFilter(action);
-        }
+        console.log('filter', action);
     },
     onLike: function(isLiked, id) {
-        if(null !== this.configs.onLike) {
-            this.configs.onLike(isLiked, id);
-        }
+        console.log('praise', isLiked, id);
+    },
+    onReply: function(v) {
+        // this.replyForm.destroy();
+        // this.replyForm = null;
+        
+        console.log('reply', this.nowReplyId, v);
+    },
+    onReport: function(id) {
+        console.log('report', id);
     },
     renderReplyForm: function(id, wrapper) {
         var _self = this;
@@ -374,19 +359,6 @@ XCommentList.prototype = {
         });
         
         wrapper.appendChild(this.replyForm.getDom());
-    },
-    onReply: function(v) {
-        if(null !== this.configs.onReply) {
-            this.replyForm.destroy();
-            this.replyForm = null;
-            
-            this.configs.onReply(this.nowReplyId, v);
-        }
-    },
-    onReport: function(id) {
-        if(null !== this.configs.onReport) {
-            this.configs.onReport(id);
-        }
     },
     
     /**
