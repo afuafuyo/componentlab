@@ -16,6 +16,7 @@ function CommentAndList(containerId, configs) {
     this.init(configs);
 }
 CommentAndList.prototype = {
+    constructor: CommentAndList,
     init: function(configs) {
         var _self = this;
         
