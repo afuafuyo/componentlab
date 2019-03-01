@@ -265,8 +265,9 @@ XEvent.prototype = {
      * @param {String} type
      * @param {Function} handler
      * @param {Object} thisObject
+     * @param {Boolean} allowBubbles
      */
-    $insertEventBin: function(target, type, handler, thisObject) {
+    $insertEventBin: function(target, type, handler, thisObject, allowBubbles) {
         var map = this.$eventBinMap;
         
         if(undefined === map[type]) {
@@ -277,7 +278,8 @@ XEvent.prototype = {
             target: target,
             type: type,
             handler: handler,
-            thisObject: thisObject
+            thisObject: thisObject,
+            allowBubbles: allowBubbles
         };
         
         map[type].push(eventBin);
@@ -298,10 +300,12 @@ XEvent.prototype = {
         }
         
         for(var i=0, len=map[type].length; i<len; i++) {
-            if(target === map[type][i].target) {
+            // 点击源相符 或者 允许冒泡
+            if(target === map[type][i].target || map[type][i].allowBubbles) {
                 map[type][i].handler.call(map[type][i].thisObject, e);
                 
-                break;
+                // 允许冒泡之后 可能同时有多个目标需要执行 所以不能 break
+                // break;
             }
         }
     },
@@ -313,12 +317,16 @@ XEvent.prototype = {
      * @param {String} type
      * @param {Function} handler
      * @param {Object} thisObject
+     * @param {Boolean} allowBubbles
      */
-    addEventListener: function(element, type, handler, thisObject) {
+    addEventListener: function(element, type, handler, thisObject, allowBubbles) {
         var _self = this;
         
         if(undefined === thisObject) {
             thisObject = null;
+        }
+        if(undefined === allowBubbles) {
+            allowBubbles = false;
         }
         
         // 避免重复绑定事件
@@ -329,7 +337,7 @@ XEvent.prototype = {
             }, false);
         }
         
-        this.$insertEventBin(element, type, handler, thisObject);
+        this.$insertEventBin(element, type, handler, thisObject, allowBubbles);
     },
     
     /**
@@ -439,7 +447,7 @@ function XCommentEmoji(button, xComment) {
             _self.handlerPopClick(e);
         };
         
-        XComment.event.addEventListener(document.body, 'click', this.handlerPopClose, this);
+        XComment.event.addEventListener(document.body, 'click', this.handlerPopClose, this, true);
     };
     
     // 插入表情
