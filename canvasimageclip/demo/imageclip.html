@@ -2,24 +2,30 @@
 <html>
 <head>
 <style type="text/css">
+body {margin: 0}
 canvas {
     background-color: #000;
 }
 </style>
 </head>
 <body>
-<div style="position:absolute; top:200px; left:0px; width:600px; height:400px;">
+<div id="rs"></div>
+<img src="" id="preview"/>
+
+<div style="position:absolute; top:200px; left:200px; width:600px; height:400px;">
     <canvas id="myCanvas" width="600" height="400" style='position:absolute; top:0; left:0;'></canvas>
 </div>
 
-<div style="position:absolute; top:200px; left:800px; width:600px; height:400px;">
+
+<div style="position:absolute; top:200px; left:900px; width:600px; height:400px;">
     <canvas id="myCanvas2" width="600" height="400" style='position:absolute; top:0; left:0;'></canvas>
 </div>
-<div id="rs"></div>
+
+
 
 <script src="../ImageClip.js"></script>
 <script>
-var imgClip = new ImageClip('myCanvas', {
+var imgClip = new ImageClip(document.getElementById('myCanvas'), {
     maskStyle: 'rgba(0, 0, 0, .6)',
     clipWidth: 200,
     clipHeight: 200
@@ -27,14 +33,19 @@ var imgClip = new ImageClip('myCanvas', {
 imgClip.clip('./foo.jpg');
 
 var rs = document.getElementById('rs');
+var preview = document.getElementById('preview');
 imgClip.onChange = function(d) {
-    rs.innerHTML = 'x1: ' + d.x1
-        + '<br />y1: ' + d.y1
-        + '<br />x2: ' + d.x2
-        + '<br />y2: ' + d.y2
+    rs.innerHTML = 'x: ' + d.x
+        + '<br />y: ' + d.y
+        + '<br />w: ' + d.w
+        + '<br />h: ' + d.h
+        
+    //preview.src = imgClip.getPreview(d.x, d.y);
 }
 
-var imgClip2 = new ImageClip('myCanvas2', {
+
+
+var imgClip2 = new ImageClip(document.getElementById('myCanvas2'), {
     maskStyle: 'rgba(255, 255, 255, .4)',
     clipWidth: 200,
     clipHeight: 200

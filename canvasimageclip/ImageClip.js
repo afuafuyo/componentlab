@@ -3,38 +3,40 @@
  *
  * @author afu
  *
- * @param {String} id
+ * @param {Element} canvas
  * @param {Object} options
  */
-function ImageClip(id, options) {
-    this.doc = document;
-
-    this.canvas = this.doc.getElementById(id);
-    this.context = this.canvas.getContext('2d');
-    this.canvasWidth = this.canvas.width;
-    this.canvasHeight = this.canvas.height;
+function ImageClip(canvas, options) {
+    this.canvas = canvas;
+    this.context = canvas.getContext('2d');
+    this.canvasWidth = canvas.width;
+    this.canvasHeight = canvas.height;
     
+    // 图片信息
     this.image = new Image();
-    this.imageOriginWidth = 0;
-    this.imageOriginHeight = 0;
-    this.imageScaleWidth = 0;
-    this.imageScaleHeight = 0;
+    this.originImageWidth = 0;
+    this.originImageHeight = 0;
+    this.scaleImageWidth = 0;
+    this.scaleImageHeight = 0;
     this.aspectRatio = 1;
     
+    // 裁剪移动信息
     this.inClipPath = false;
     this.beginMove = false;
     this.diffX = 0;
     this.diffY = 0;
     this.onChange = null;
     
-    this.clipScaleWidth = 0;
-    this.clipScaleHeight = 0;
+    this.scaleClipWidth = 0;
+    this.scaleClipHeight = 0;
     this.clipX = 0;
     this.clipY = 0;
     this.configs = {
+        // 遮罩样式
         maskStyle: 'rgba(0, 0, 0, .6)',
-        clipWidth: 200,
-        clipHeight: 200
+        // 要裁剪的大小
+        clipWidth: 100,
+        clipHeight: 100
     };
     this.init(options);
 }
@@ -47,17 +49,30 @@ ImageClip.prototype = {
             }
         }
     },
+    isWideImage: function() {
+        return this.originImageWidth >= this.originImageHeight;
+    },
+    
+    
     drawImage: function() {
         // 宽图
         if(this.isWideImage()) {
-            this.context.drawImage(this.image,
-                0, (this.canvasHeight - this.imageScaleHeight) / 2,
-                this.canvasWidth, this.imageScaleHeight);
+            this.context.drawImage(
+                this.image,
+                0,
+                (this.canvasHeight - this.scaleImageHeight) / 2,
+                this.canvasWidth,
+                this.scaleImageHeight
+            );
         
         } else {
-            this.context.drawImage(this.image,
-                (this.canvasWidth - this.imageScaleWidth) / 2, 0,
-                this.imageScaleWidth, this.canvasHeight);
+            this.context.drawImage(
+                this.image,
+                (this.canvasWidth - this.scaleImageWidth) / 2,
+                0,
+                this.scaleImageWidth,
+                this.canvasHeight
+            );
         }
     },
     render: function() {
@@ -80,25 +95,25 @@ ImageClip.prototype = {
         this.context.rect(
             this.clipX,
             this.clipY,
-            this.clipScaleWidth,
-            this.clipScaleHeight);
+            this.scaleClipWidth,
+            this.scaleClipHeight);
         this.context.stroke();
         // this.context.closePath();
         
-        // clip
+        // clip view area
         this.context.clip();
         
-        // view
+        // view image
         this.drawImage();
         
         this.context.restore();
     },
-    isWideImage: function() {
-        return this.imageOriginWidth >= this.imageOriginHeight;
-    },
+    
+    
+    // 移动相关
     checkPath: function(e) {
-        if(e.offsetX > this.clipX && e.offsetX < this.clipX + this.clipScaleWidth
-            && e.offsetY > this.clipY && e.offsetY < this.clipY + this.clipScaleHeight) {
+        if(e.offsetX > this.clipX && e.offsetX < this.clipX + this.scaleClipWidth
+            && e.offsetY > this.clipY && e.offsetY < this.clipY + this.scaleClipHeight) {
             
             this.inClipPath = true;
             
@@ -125,37 +140,37 @@ ImageClip.prototype = {
         this.clipY = e.offsetY - this.diffY;
         
         // 限制裁剪移动区域
-        var tmp = 0;
+        var gap = 0;
         if(this.isWideImage()) {
-            tmp = (this.canvasHeight - this.imageScaleHeight) / 2;
+            gap = (this.canvasHeight - this.scaleImageHeight) / 2;
             
             if(this.clipX <= 0) {
                 this.clipX = 0;
             }
-            if(this.clipX + this.clipScaleWidth >= this.canvasWidth) {
-                this.clipX = this.canvasWidth - this.clipScaleWidth;
+            if(this.clipX + this.scaleClipWidth >= this.canvasWidth) {
+                this.clipX = this.canvasWidth - this.scaleClipWidth;
             }
-            if(this.clipY <= tmp) {
-                this.clipY = tmp;
+            if(this.clipY <= gap) {
+                this.clipY = gap;
             }
-            if(this.clipY + this.clipScaleHeight + tmp >= this.canvasHeight) {
-                this.clipY = this.canvasHeight - tmp - this.clipScaleHeight;
+            if(this.clipY + this.scaleClipHeight + gap >= this.canvasHeight) {
+                this.clipY = this.canvasHeight - gap - this.scaleClipHeight;
             }
             
         } else {
-            tmp = (this.canvasWidth - this.imageScaleWidth) / 2;
+            gap = (this.canvasWidth - this.scaleImageWidth) / 2;
         
-            if(this.clipX <= tmp) {
-                this.clipX = tmp;
+            if(this.clipX <= gap) {
+                this.clipX = gap;
             }
-            if(this.clipX + this.clipScaleWidth + tmp >= this.canvasWidth) {
-                this.clipX = this.canvasWidth - tmp - this.clipScaleWidth;
+            if(this.clipX + this.scaleClipWidth + gap >= this.canvasWidth) {
+                this.clipX = this.canvasWidth - gap - this.scaleClipWidth;
             }
             if(this.clipY <= 0) {
                 this.clipY = 0;
             }
-            if(this.clipY + this.clipScaleHeight >= this.canvasHeight) {
-                this.clipY = this.canvasHeight - this.clipScaleHeight;
+            if(this.clipY + this.scaleClipHeight >= this.canvasHeight) {
+                this.clipY = this.canvasHeight - this.scaleClipHeight;
             }
         }
         
@@ -165,26 +180,8 @@ ImageClip.prototype = {
             this.onChange(this.getClipPosition());
         }
     },
-    getClipPosition: function() {
-        var wideImage = this.isWideImage();
-        var tmp = wideImage
-            ? (this.canvasHeight - this.imageScaleHeight) / 2
-            : (this.canvasWidth - this.imageScaleWidth) / 2;
-        
-        return wideImage
-            ? {
-                x1: this.clipX / this.aspectRatio,
-                y1: (this.clipY - tmp) / this.aspectRatio,
-                x2: (this.clipX + this.clipScaleWidth) / this.aspectRatio,
-                y2: (this.clipY + this.clipScaleHeight - tmp) / this.aspectRatio
-                
-            } : {
-                x1: (this.clipX - tmp) / this.aspectRatio,
-                y1: this.clipY / this.aspectRatio,
-                x2: (this.clipX + this.clipScaleWidth - tmp) / this.aspectRatio,
-                y2: (this.clipY + this.clipScaleHeight) / this.aspectRatio
-            };
-    },
+    
+    
     /**
      * 裁剪图片
      *
@@ -195,35 +192,29 @@ ImageClip.prototype = {
         
         this.image.onload = function() {
             // 原大小
-            _self.imageOriginWidth = this.width;
-            _self.imageOriginHeight = this.height;
+            _self.originImageWidth = this.width;
+            _self.originImageHeight = this.height;
                         
-            // 宽图按宽度占满
+            // 宽图按宽度占满 可能导致放大 Emmmmmm 写代码就是要为所欲为
             if(_self.isWideImage()) {
-                _self.imageScaleWidth = _self.canvasWidth;
-                _self.imageScaleHeight = _self.imageScaleWidth * _self.imageOriginHeight / _self.imageOriginWidth;
-                
-                _self.aspectRatio = _self.imageScaleWidth / _self.imageOriginWidth;
-                
-                // 裁剪大小
-                _self.clipScaleWidth = _self.configs.clipWidth * _self.aspectRatio;
-                _self.clipScaleHeight = _self.configs.clipHeight * _self.aspectRatio;
+                _self.scaleImageWidth = _self.canvasWidth;
+                _self.aspectRatio = _self.scaleImageWidth / _self.originImageWidth;
+                _self.scaleImageHeight = _self.aspectRatio * _self.originImageHeight;
                 
             } else {
                 // 高图按高度占满
-                _self.imageScaleHeight = _self.canvasHeight;
-                _self.imageScaleWidth = _self.imageScaleHeight * _self.imageOriginWidth / _self.imageOriginHeight;
-                
-                _self.aspectRatio = _self.imageScaleHeight / _self.imageOriginHeight;
-                
-                // 裁剪大小
-                _self.clipScaleHeight = _self.configs.clipHeight * _self.aspectRatio;
-                _self.clipScaleWidth = _self.configs.clipWidth * _self.aspectRatio;
+                _self.scaleImageHeight = _self.canvasHeight;
+                _self.aspectRatio = _self.scaleImageHeight / _self.originImageHeight;
+                _self.scaleImageWidth = _self.aspectRatio * _self.originImageWidth;
             }
             
+            // 裁剪区大小
+            _self.scaleClipWidth = _self.configs.clipWidth * _self.aspectRatio;
+            _self.scaleClipHeight = _self.configs.clipHeight * _self.aspectRatio;
+            
             // 裁剪位置定位在中心
-            _self.clipX = (_self.canvasWidth - _self.clipScaleWidth) / 2;
-            _self.clipY = (_self.canvasHeight - _self.clipScaleHeight) / 2;
+            _self.clipX = (_self.canvasWidth - _self.scaleClipWidth) / 2;
+            _self.clipY = (_self.canvasHeight - _self.scaleClipHeight) / 2;
             
             // entry
             _self.render();
@@ -245,6 +236,57 @@ ImageClip.prototype = {
             _self.beginMove = false;
         };
     },
+    
+    
+    getClipPosition: function() {
+        var wideImage = this.isWideImage();
+        var gap = wideImage
+            ? (this.canvasHeight - this.scaleImageHeight) / 2
+            : (this.canvasWidth - this.scaleImageWidth) / 2;
+        
+        return wideImage
+            ? {
+                x: this.clipX / this.aspectRatio,
+                y: (this.clipY - gap) / this.aspectRatio,
+                w: this.configs.clipWidth,
+                h: this.configs.clipHeight
+                
+            } : {
+                x: (this.clipX - gap) / this.aspectRatio,
+                y: this.clipY / this.aspectRatio,
+                w: this.configs.clipWidth,
+                h: this.configs.clipHeight
+            };
+    },
+    getPreview: function(startX, startY) {
+        var doc = this.canvas.ownerDocument;
+        var w = this.configs.clipWidth;
+        var h = this.configs.clipHeight;
+        var canvas = doc.createElement('canvas');
+        var context = canvas.getContext('2d');
+        
+        canvas.width = w;
+        canvas.height = h;
+        context.drawImage(
+            this.image,
+            startX,
+            startY,
+            w,
+            h,
+            0,
+            0,
+            w,
+            h
+        );
+        
+        var base64 = canvas.toDataURL();
+        
+        context = null;
+        canvas = null;
+        doc = null;
+        
+        return base64;
+    },
     /**
      * 销毁
      */
@@ -256,6 +298,8 @@ ImageClip.prototype = {
         this.context = null;
         this.canvas = null;
         this.image = null;
+        
+        this.onChange = null;
         
         this.doc = null;
     }
