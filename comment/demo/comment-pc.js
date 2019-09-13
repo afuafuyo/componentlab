@@ -1,10 +1,10 @@
 /**
  * 评论组件
  */
-function CommentAndList(containerId, configs) {
+function CommentAndList(configs) {
     this.doc = document;
     
-    this.container = this.doc.getElementById(containerId);
+    this.container = null;
     this.commentForm = null;
     this.commentList = null;
     
@@ -123,7 +123,11 @@ CommentAndList.prototype = {
             }]
         });
     },
-    render: function() {
+    render: function(containerId) {
+        if(null === this.container) {
+            this.container = this.doc.getElementById(containerId);
+        }
+        
         this.container.appendChild(this.commentForm.getDom());
         this.container.appendChild(this.commentList.getDom());
         

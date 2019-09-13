@@ -18,14 +18,14 @@
 <div id="demo" style="width: 600px; margin: 0 auto"></div>
 
 <script>
-var c = new CommentAndList('demo', {
+var c = new CommentAndList({
     isLogin: true,
     onLogin: function() {
         console.log('login')
     },
     formAvatar: 'http://i0.hdslb.com/bfs/face/0609670dfc759b43bd0a915e72889d901e7637a6.jpg@52w_52h.webp'
 });
-c.render();
+c.render('demo');
 
 
 var c2 = new XCommentMobile({
