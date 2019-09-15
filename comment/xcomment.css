@@ -42,7 +42,7 @@
  * form
  */
 .xcomment-form {
-    margin: 20px 0;
+    padding-top: 20px;
 }
 .xcomment-form-btn {
     position: absolute;
@@ -70,7 +70,7 @@
 }
 .xcomment-form-face {
     position: absolute;
-    top: 0;
+    top: 30px;
     left: 0;
 }
 .xcomment-form-avatar {
@@ -89,6 +89,7 @@
     text-align: center;
     font-size: 14px;
     background-color: #e5e9ef;
+    border-radius: 4px;
 }
 .xcomment-form-content-login a {
     color: #00a1d6;
