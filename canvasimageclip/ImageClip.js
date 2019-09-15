@@ -237,7 +237,9 @@ ImageClip.prototype = {
         };
     },
     
-    
+    /**
+     * 获取裁剪位置信息
+     */
     getClipPosition: function() {
         var wideImage = this.isWideImage();
         var gap = wideImage
@@ -258,7 +260,11 @@ ImageClip.prototype = {
                 h: this.configs.clipHeight
             };
     },
-    getPreview: function(startX, startY) {
+    
+    /**
+     * 获取裁剪预览
+     */
+    getPreview: function(startX, startY, type, encoderOptions) {
         var doc = this.canvas.ownerDocument;
         var w = this.configs.clipWidth;
         var h = this.configs.clipHeight;
@@ -279,7 +285,7 @@ ImageClip.prototype = {
             h
         );
         
-        var base64 = canvas.toDataURL();
+        var base64 = canvas.toDataURL(type, encoderOptions);
         
         context = null;
         canvas = null;
