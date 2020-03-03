@@ -12,8 +12,8 @@
     background-position: -10px -280px;
 }
 .xcomment-icon-prize {
-    background-position: -10px -23px;
-    vertical-align: text-top;
+    background-position: -10px -22px;
+    vertical-align: text-bottom;
 }
 .xcomment-relative {
     position: relative;
@@ -38,35 +38,12 @@
     background-color: #fff;
 }
 
+
 /**
  * form
  */
 .xcomment-form {
     padding-top: 20px;
-}
-.xcomment-form-btn {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 72px;
-    height: 30px;
-    font-size: 12px;
-    color: #fff;
-    border: 1px solid #00a1d6;
-    background-color: #00a1d6;
-    outline: 0;
-    cursor: pointer;
-    border-radius: 4px;
-}
-.xcomment-form-btn:hover {
-    background-color: #00b5e5;
-    border-color: #00b5e5;
-}
-.xcomment-form-btn[disabled="disabled"] {
-    background-color: #e5e9ef;
-    border-color: #e5e9ef;
-    color: #b8c0cc;
-    cursor: default;
 }
 .xcomment-form-face {
     position: absolute;
@@ -87,7 +64,7 @@
     height: 68px;
     line-height: 68px;
     text-align: center;
-    font-size: 14px;
+    font-size: 12px;
     background-color: #e5e9ef;
     border-radius: 4px;
 }
@@ -129,6 +106,30 @@
 .xcomment-form-widget a {
     text-decoration: none;
 }
+.xcomment-form-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 72px;
+    height: 30px;
+    font-size: 12px;
+    color: #fff;
+    border: 1px solid #00a1d6;
+    background-color: #00a1d6;
+    outline: 0;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.xcomment-form-btn:hover {
+    background-color: #00b5e5;
+    border-color: #00b5e5;
+}
+.xcomment-form-btn[disabled="disabled"] {
+    background-color: #e5e9ef;
+    border-color: #e5e9ef;
+    color: #b8c0cc;
+    cursor: default;
+}
 .xcomment-form-widget-item {
     display: inline-block;
     height: 26px;
@@ -143,10 +144,6 @@
 }
 .xcomment-form-widget-item:hover {
     background-color: #e5e9ef;
-}
-.xcomment-form-widget-emoji {
-    background: url(./xcomment.png) no-repeat -6px -340px;
-    padding-left: 26px;
 }
 .xcomment-form-pop {
     position: absolute;
@@ -169,16 +166,21 @@
     background: url(./xcomment.png) no-repeat -12px -456px;
 }
 
+
 /* emoji */
-.xcomment-emoji-wrapper {
+.xcomment-form-widget-emoji {
+    background: url(./xcomment.png) no-repeat -6px -340px;
+    padding-left: 26px;
+}
+.xcomment-form-widget-emoji-wrapper {
     width: 380px;
 }
-.xcomment-emoji-title {
+.xcomment-form-widget-emoji-title {
     font-size: 12px;
     line-height: 20px;
     margin: 5px 12px 5px 12px;
 }
-.xcomment-emoji-footer {
+.xcomment-form-widget-emoji-footer {
     position: relative;
     height: 38px;
     line-height: 38px;
@@ -186,21 +188,21 @@
     overflow: hidden;
     border-radius: 6px;
 }
-.xcomment-emoji-footer a {
+.xcomment-form-widget-emoji-footer a {
     display: inline-block;
     width: 60px;
     color: #111;
     text-align: center;
 }
-.xcomment-emoji-footer a.active {
+.xcomment-form-widget-emoji-footer a.active {
     background-color: #fff;
 }
-.xcomment-emoji-content {
+.xcomment-form-widget-emoji-content {
     height: 150px;
     margin: 0 12px 0 12px;
     overflow: auto;
 }
-.xcomment-emoji-content a {
+.xcomment-form-widget-emoji-content a {
     display: inline-block;
     padding: 5px 6px;
     margin: 3px 3px;
@@ -209,90 +211,112 @@
     transition: background-color .2s;
     border-radius: 4px;
 }
-.xcomment-emoji-content a:hover {
+.xcomment-form-widget-emoji-content a:hover {
     background-color: #ddd;
 }
 
+
 /**
- * comment item
+ * comment list
  */
 @keyframes rotateAnimation {
     from {transform: rotate(0deg);}
     to {transform: rotate(360deg);}
 }
-.xcomment-loading {
+.xcomment-list-loading {
     padding: 10px 0;
     text-align: center;
 }
-.xcomment-loading i {
+.xcomment-list-loading i {
     display: inline-block;
     width: 40px;
     height: 40px;
     background: transparent url(./loading.png) no-repeat 0 0;
     animation: rotateAnimation 1s linear infinite;
 }
-.xcomment-item {
+/* list header */
+.xcomment-list-header {
+    border-bottom: 1px solid #e5e9ef;
+}
+.xcomment-list-header a {
+    display: inline-block;
+    margin-right: 16px;
+    height: 36px;
+    line-height: 36px;
+    padding: 0 10px;
+    color: #222;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+}
+.xcomment-list-header a.active,
+.xcomment-list-header a:hover {
+    color: #00a1d6;
+    border-bottom-color: #00a1d6;
+}
+.xcomment-list-item {
     margin-top: 20px;
 }
-.xcomment-face {
+.xcomment-list-face {
     position: absolute;
-    top: 0;
+    top: 5px;
     left: 0;
 }
-.xcomment-avatar {
+.xcomment-list-avatar {
     width: 50px;
     height: 50px;
     border-radius: 25px;
 }
-.xcomment-content {
+.xcomment-list-content {
     margin-left: 70px;    
 }
-.xcomment-content-toplevel {
+.xcomment-list-content-toplayer {
     padding-bottom: 12px;
     border-bottom: 1px solid #e5e9ef;
 }
-.xcomment-nick {
+.xcomment-list-nick {
     font-size: 12px;
-    font-weight: bold;
     line-height: 26px;
 }
-.xcomment-nick a {
+.xcomment-list-nick a {
     color: #6d757a;
+    font-weight: bold;
     text-decoration: none;
 }
-.xcomment-text {
+.xcomment-list-text {
     line-height: 22px;
     font-size: 14px;
 }
-.xcomment-widget {
+.xcomment-list-widget {
     position: relative;
     color: #99a2aa;
     margin-top: 5px;
     line-height: 26px;
     font-size: 12px;
 }
-.xcomment-widget a {
+.xcomment-list-widget a {
     color: #99a2aa;
     text-decoration: none;
 }
-.xcomment-widget-margin {
+.xcomment-list-widget-margin {
     margin-right: 20px;
 }
-.xcomment-operation {
+.xcomment-list-operation {
     position: absolute;
     top: 3px;
     right: 0;
     width: 18px;
     height: 18px;
 }
-.xcomment-operation:hover .xcomment-icon-dot {
+.xcomment-list-operation:hover .xcomment-icon-dot {
     cursor: pointer;
     background-position: -75px -280px;
 }
-.xcomment-operation:hover .xcomment-operation-drop {
+.xcomment-list-operation:hover .xcomment-list-operation-drop {
     display: block;
 }
-.xcomment-operation-drop {
+.xcomment-list-operation-drop {
     position: absolute;
     z-index: 10;
     right: 0;
@@ -307,7 +331,7 @@
     border-radius: 4px;
     display: none;
 }
-.xcomment-operation-drop-item {
+.xcomment-list-operation-drop-item {
     display: block;
     height: 36px;
     line-height: 36px;
@@ -315,75 +339,54 @@
     color: #000;
     transition: color, background-color .2s;
 }
-.xcomment-operation-drop-item:hover {
+.xcomment-list-operation-drop-item:hover {
     color: #00a1d6;
     background-color: #e5e9ef;
 }
-.xcomment-widget-prize {
+.xcomment-list-widget-prize {
     cursor: pointer;
 }
-.xcomment-widget-prize:hover .xcomment-icon-prize,
-.xcomment-widget-prize[data-liked="1"] .xcomment-icon-prize {
-    background-position: -10px -87px;
+.xcomment-list-widget-prize:hover .xcomment-icon-prize,
+.xcomment-list-widget-prize[data-liked="1"] .xcomment-icon-prize {
+    background-position: -10px -86px;
 }
-.xcomment-btn {
+.xcomment-list-btn {
     display: inline-block;
     padding: 0 5px;
     cursor: pointer;
     border-radius: 4px;
 }
-.xcomment-btn:hover {
+.xcomment-list-btn:hover {
     color: #00a1d6;
     background-color: #e5e9ef;
 }
 
-/* header */
-.xcomment-header {
-    border-bottom: 1px solid #e5e9ef;
-}
-.xcomment-header a {
-    display: inline-block;
-    margin-right: 16px;
-    height: 36px;
-    line-height: 36px;
-    padding: 0 10px;
-    color: #222;
-    font-size: 14px;
-    font-weight: bold;
-    text-decoration: none;
-    border-bottom: 1px solid transparent;
-}
-.xcomment-header a.active,
-.xcomment-header a:hover {
-    color: #00a1d6;
-    border-bottom-color: #00a1d6;
-}
+
 
 /* reply */
-.xcomment-reply {
+.xcomment-list-reply {
     margin-left: 70px;
 }
-.xcomment-reply-item {
+.xcomment-list-reply-item {
     margin-top: 10px;
 }
-.xcomment-reply-face {
+.xcomment-list-reply-face {
     left: 0;
 }
-.xcomment-reply-avatar {
-    width: 26px;
-    height: 26px;
-    border-radius: 13px;
+.xcomment-list-reply-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
 }
-.xcomment-content-reply {
-    margin-left: 40px;
+.xcomment-list-content-reply {
+    margin-left: 50px;
 }
-.xcomment-reply-text {
-    margin-left: 10px;
+.xcomment-list-reply-text {
     font-weight: normal;
 }
-.xcomment-reply-widget .xcomment-icon-dot {
+.xcomment-list-reply-widget .xcomment-icon-dot {
     display: none;
 }
-.xcomment-reply-widget:hover .xcomment-icon-dot {
+.xcomment-list-reply-widget:hover .xcomment-icon-dot {
     display: block;
 }

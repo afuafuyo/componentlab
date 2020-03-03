@@ -5,6 +5,7 @@
 body {margin: 0}
 canvas {
     background-color: #000;
+    max-width: 100%;
 }
 </style>
 </head>
@@ -12,25 +13,22 @@ canvas {
 <div id="rs"></div>
 <img src="" id="preview"/>
 
-<div style="position:absolute; top:200px; left:200px; width:600px; height:400px;">
-    <canvas id="myCanvas" width="600" height="400" style='position:absolute; top:0; left:0;'></canvas>
-</div>
+<div id="a" style="position:absolute; top:100px; left:0; width:300px; height:400px;"></div>
 
-
-<div style="position:absolute; top:200px; left:900px; width:600px; height:400px;">
-    <canvas id="myCanvas2" width="600" height="400" style='position:absolute; top:0; left:0;'></canvas>
-</div>
+<div id="b" style="position:absolute; top:100px; left:700px; width:600px; height:400px;"></div>
 
 
 
 <script src="../ImageClip.js"></script>
 <script>
-var imgClip = new ImageClip(document.getElementById('myCanvas'), {
+var imgClip = new ImageClip({
+    canvasWidth: 600,
+    canvasHeight: 400,
     maskStyle: 'rgba(0, 0, 0, .6)',
     clipWidth: 200,
     clipHeight: 200
 });
-imgClip.clip('./foo.jpg');
+imgClip.render(document.getElementById('a'), './foo.jpg');
 
 var rs = document.getElementById('rs');
 var preview = document.getElementById('preview');
@@ -39,18 +37,20 @@ imgClip.onChange = function(d) {
         + '<br />y: ' + d.y
         + '<br />w: ' + d.w
         + '<br />h: ' + d.h
-        
+
     //preview.src = imgClip.getPreview(d.x, d.y);
 }
 
 
 
-var imgClip2 = new ImageClip(document.getElementById('myCanvas2'), {
-    maskStyle: 'rgba(255, 255, 255, .4)',
+var imgClip2 = new ImageClip({
+    canvasWidth: 600,
+    canvasHeight: 400,
+    maskStyle: 'rgba(0, 128, 0, .4)',
     clipWidth: 200,
     clipHeight: 200
 });
-imgClip2.clip('./bar.jpg');
-</script> 
+imgClip2.render(document.getElementById('b'), './bar.jpg');
+</script>
 </body>
 </html>

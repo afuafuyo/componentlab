@@ -1,9 +1,9 @@
 /**
- * 评论组件
+ * 评论 form 组件
  */
 'use strict';
 
-function XComment(options) {
+function XCommentForm(options) {
     this.doc = document;
     this.container = null;
     this.submitButton = null;
@@ -27,8 +27,8 @@ function XComment(options) {
     };
     this.init(options);
 }
-XComment.prototype = {
-    constructor: XComment,
+XCommentForm.prototype = {
+    constructor: XCommentForm,
     extend: function(origin, configs) {
         if(undefined === configs) {
             return origin;
@@ -116,7 +116,7 @@ XComment.prototype = {
             item.innerHTML = this.configs.widgets[i].text;
             
             this.widgetControllerInstances[this.configs.widgets[i].name] =
-                new XComment.widgetControllers[this.configs.widgets[i].name](item, this);
+                new XCommentForm.widgetControllers[this.configs.widgets[i].name](item, this);
             
             
             this.widgetsWrapper.appendChild(item);
@@ -237,7 +237,7 @@ XComment.prototype = {
 /**
  * Event
  */
-XComment.event = (function() {
+XCommentForm.event = (function() {
 
 var XEvent = function() {
     /**
@@ -374,20 +374,20 @@ return new XEvent();
  * {name: Function ...}
  *
  */
-XComment.widgetControllers = {};
-XComment.registerWidgetController = function(name, processer) {
-    XComment.widgetControllers[name] = processer;
+XCommentForm.widgetControllers = {};
+XCommentForm.registerWidgetController = function(name, processer) {
+    XCommentForm.widgetControllers[name] = processer;
 };
 
 /**
  * UI
  */
-XComment.userInterfaces = {};
-XComment.registerUI = function(name, processer) {
-    XComment.userInterfaces[name] = processer;
+XCommentForm.userInterfaces = {};
+XCommentForm.registerUI = function(name, processer) {
+    XCommentForm.userInterfaces[name] = processer;
 }
-XComment.getUI = function(name) {
-    return new XComment.userInterfaces[name]().getDom();
+XCommentForm.getUI = function(name) {
+    return new XCommentForm.userInterfaces[name]().getDom();
 }
 
 /**
@@ -408,7 +408,7 @@ XCommentUIPop.prototype = {
         return this.wrapper;
     }
 };
-XComment.registerUI('pop', XCommentUIPop);
+XCommentForm.registerUI('pop', XCommentUIPop);
 
 /**
  * emotion widget
@@ -419,10 +419,10 @@ function XCommentEmoji(button, xComment) {
     this.pop = null;
     
     this.init = function() {
-        this.pop = XComment.getUI('pop');
+        this.pop = XCommentForm.getUI('pop');
         this.pop.innerHTML =
-'<div class="xcomment-emoji-wrapper"><div class="xcomment-emoji-title">标题</div>' +
-    '<div class="xcomment-emoji-content">' +
+'<div class="xcomment-form-widget-emoji-wrapper"><div class="xcomment-form-widget-emoji-title">标题</div>' +
+    '<div class="xcomment-form-widget-emoji-content">' +
         '<a href="javascript:;" data-role="em" title="舒服" data-em="(￣▽￣)">(￣▽￣)</a>' +
         '<a href="javascript:;" data-role="em" title="高兴" data-em="(^_^)">(^_^)</a>' +
         '<a href="javascript:;" data-role="em" title="难过" data-em="(＞﹏＜)">(＞﹏＜)</a>' +
@@ -438,7 +438,7 @@ function XCommentEmoji(button, xComment) {
         '<a href="javascript:;" data-role="em" title="鄙视" data-em="→_→">→_→</a>' +
         '<a href="javascript:;" data-role="em" title="鄙视" data-em="←_←">←_←</a>' +
     '</div>' +
-    '<div class="xcomment-emoji-footer">' +
+    '<div class="xcomment-form-widget-emoji-footer">' +
         '<a href="javascript:;" class="active">颜文字</a>' +
     '</div></div>';
 
@@ -447,7 +447,7 @@ function XCommentEmoji(button, xComment) {
             _self.handlerPopClick(e);
         };
         
-        XComment.event.addEventListener(document.body, 'click', this.handlerPopClose, this, true);
+        XCommentForm.event.addEventListener(document.body, 'click', this.handlerPopClose, this, true);
     };
     
     // 插入表情
@@ -510,7 +510,7 @@ function XCommentEmoji(button, xComment) {
         
         if(null !== this.pop) {
             this.pop.onclick = null;
-            XComment.event.removeEventListener(document.body, 'click', this.handlerPopClose);
+            XCommentForm.event.removeEventListener(document.body, 'click', this.handlerPopClose);
         }
         
         this.pop = null;
@@ -518,4 +518,4 @@ function XCommentEmoji(button, xComment) {
         this.xComment = null;
     };
 }
-XComment.registerWidgetController('emoji', XCommentEmoji);
+XCommentForm.registerWidgetController('emoji', XCommentEmoji);

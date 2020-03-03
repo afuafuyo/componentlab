@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Comment</title>
-    <script src="../xcomment.js"></script>
+    <script src="../xcommentform.js"></script>
+    <script src="../xcommentlist.js"></script>
     <script src="../xcomment-mobile.js"></script>
     <script src="../../simpleTemplate/index.js"></script>
-    <script src="./comment-pc.js"></script>
+    
+    <script src="./comment.js"></script>
     <link rel="stylesheet" href="../xcomment.css">
     <link rel="stylesheet" href="../xcomment-mobile.css">
 </head>
@@ -15,10 +17,10 @@
 <button type="button" onclick="c2.destroy()">销毁 m 版 form</button>
 
 <div id="demo2" style="width: 400px; border: 1px solid red;"></div>
-<div id="demo" style="width: 600px; margin: 0 auto"></div>
+<div id="demo" style="width: 800px; margin: 0 auto"></div>
 
 <script>
-var c = new CommentAndList({
+var c = new Comment({
     isLogin: true,
     onLogin: function() {
         console.log('login')
