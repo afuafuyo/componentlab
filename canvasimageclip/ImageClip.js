@@ -289,8 +289,10 @@ ImageClip.prototype = {
     /**
      * 获取裁剪预览
      */
-    getPreview: function(startX, startY, type, encoderOptions) {
+    getPreview: function(type, encoderOptions) {
         var doc = this.canvas.ownerDocument;
+
+        var pos = this.getClipPosition();
         var w = this.configs.clipWidth;
         var h = this.configs.clipHeight;
         var canvas = doc.createElement('canvas');
@@ -300,8 +302,8 @@ ImageClip.prototype = {
         canvas.height = h;
         context.drawImage(
             this.image,
-            startX,
-            startY,
+            pos.x,
+            pos.y,
             w,
             h,
             0,
@@ -321,6 +323,8 @@ ImageClip.prototype = {
      * 销毁
      */
     destroy: function() {
+        this.container.removeChild(this.canvas);
+
         this.canvas.onmousemove = null;
         this.canvas.onmousedown = null;
         this.canvas.onmouseup = null;

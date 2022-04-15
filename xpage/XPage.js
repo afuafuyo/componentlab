@@ -20,14 +20,14 @@ function XPage(totalRecords, pageSize) {
     this.totalRecords = totalRecords;
     this.pageSize = pageSize;
     this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
-    
+
     this.mountNode = null;
     this.currentPage = 1;
     this.onChange = null;
     this.configs = {
         className: 'x-page',
         linkItemNumber: 7,
-        
+
         showHome: true,
         showPrevious: true,
         showItem: true,
@@ -48,7 +48,7 @@ XPage.prototype = {
     },
     getSegment: function(flag) {
         var str = '';
-        
+
         switch(flag) {
             case 1:
                 str = this.configs.showJump
@@ -67,16 +67,28 @@ XPage.prototype = {
                 break;
             case 4:
                 var half = Math.floor(this.configs.linkItemNumber / 2);
-                var counter = 0, tmp = '';
-                
-                for(var i=this.currentPage-half; i<this.currentPage; i++) {
+                var counter = 0;
+                var tmp = '';
+
+                // 需要补充的数
+                var leftFill = 0;
+                if(this.currentPage + half > this.totalPages) {
+                    leftFill = this.currentPage + half - this.totalPages;
+                }
+
+                // 前
+                for(var i = this.currentPage - half - leftFill; i < this.currentPage; i++) {
                     i > 0 && (tmp += '<a data-page="'+ i +'" href="javascript:;">'+ i +'</a>', counter++);
                 }
+
+                // 当前
                 tmp += '<span data-role="current">'+ this.currentPage +'</span>';
-                for(var i=this.currentPage+1; i<=this.currentPage+half+half-counter; i++) {
+
+                // 后
+                for(var i = this.currentPage + 1; i <= this.currentPage + half + half - counter; i++) {
                     i <= this.totalPages && (tmp += '<a data-page="'+ i +'" href="javascript:;">'+ i +'</a>');
                 }
-                
+
                 str = this.configs.showItem ? tmp : '';
                 break;
             case 5:
@@ -92,50 +104,50 @@ XPage.prototype = {
             default:
                 break;
         }
-        
+
         return str;
     },
     initPageEvent: function() {
         var _self = this;
-        
+
         this.mountNode.onclick = null;
         this.mountNode.onkeyup = null;
         this.mountNode.onclick = function(e) {
             var src = e.target;
-            
+
             if(1 === src.nodeType && 'A' === src.nodeName.toUpperCase()) {
                 _self.currentPage = parseInt(src.getAttribute('data-page'));
                 _self.currentPage > _self.totalPages && (_self.currentPage = _self.totalPages);
                 _self.currentPage < 1 && (_self.currentPage = 1);
-                
+
                 if(null !== _self.onChange) {
                     _self.onChange(_self.currentPage, e);
                 }
             }
         };
-        
+
         this.mountNode.onkeyup = function(e) {
             var code = e.keyCode;
-            
+
             if(13 !== code) {
                 return;
             }
-            
+
             var v = e.target.value;
-            
+
             if(/\D/.test(v)) {
                 return;
             }
-            
+
             _self.currentPage = parseInt(v);
-            
+
             if(_self.currentPage > _self.totalPages) {
                 _self.currentPage = _self.totalPages;
             }
             if(_self.currentPage < 1) {
                 _self.currentPage = 1;
             }
-            
+
             if(null !== _self.onChange) {
                 _self.onChange(_self.currentPage, e);
             }
@@ -150,14 +162,14 @@ XPage.prototype = {
             this.getSegment(5) +
             this.getSegment(6) +
             '</div>';
-            
+
         return ret;
     },
     render: function(mountNode) {
         this.mountNode = mountNode;
-        
+
         mountNode.innerHTML = this.getPageString();
-        
+
         this.initPageEvent();
     }
 };
